@@ -1,0 +1,4 @@
+- geschikte meubels kiezen
+- geschikt LLM kiezen
+- prompt fine tunen
+- vragen kiezen
