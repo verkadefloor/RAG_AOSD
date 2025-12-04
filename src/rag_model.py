@@ -12,8 +12,12 @@ model_name = "BramVanroy/GEITje-7B-ultra-sft"  # chat-fijngetuned, gratis
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", torch_dtype=torch.float16)
 
+
+
+
+
 # 3️⃣ Chat pipeline (conversational)
-chat_pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, device=0)
+chat_pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
 def chat_with_furniture(user_input, furniture_title):
     """Genereer een antwoord als het gekozen meubelstuk."""
