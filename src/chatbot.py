@@ -1,35 +1,74 @@
-# src/chatbot.py
 from rag_model import chat_with_furniture
+import json
 
-print("Welkom bij de meubel chatbot! Typ 'exit' om te stoppen.\n")
+# Load furniture data
+with open("data/raw/furniture_data.json", "r", encoding="utf-8") as f:
+    furniture_data = json.load(f)
 
-# Kies het meubelstuk
-furniture_title = input("Welk meubelstuk wil je spreken? (bijv. 'Stoel Louis XV'):\n> ")
+print("Welcome to the furniture chatbot! Type 'exit' to quit.\n")
 
-# Drie vaste vragen
-vragen = [
-    "Vertel iets over je herkomst en stijl.",
-    "Wat maakt jou uniek vergeleken met andere meubelstukken?",
-    "Heb je ooit een interessante gebeurtenis meegemaakt?"
+# Let the user choose a furniture piece
+while True:
+    print("Which piece of furniture would you like to speak to?")
+    for i, furniture in enumerate(furniture_data, 1):
+        print(f"{i}. {furniture['title']}")
+    print("0. Quit")
+
+    choice = input("> ")
+    if choice.lower() in ["0", "exit", "quit"]:
+        print("Goodbye! 👋")
+        exit()
+
+    if choice.isdigit() and 1 <= int(choice) <= len(furniture_data):
+        furniture_title = furniture_data[int(choice) - 1]["title"]
+        break
+    else:
+        print("Invalid choice. Please select a number from the list.")
+
+# 3 standard questions
+questions = [
+    "Tell me something about your origin and style.",
+    "What makes you unique compared to other pieces of furniture?",
+    "Have you ever experienced an interesting event?"
 ]
 
 while True:
-    print("\nKies een vraag of typ je eigen vraag:")
-    for i, vraag in enumerate(vragen, 1):
-        print(f"{i}. {vraag}")
-    print("0. Stoppen")
+    print(f"\nYou are now talking to {furniture_title}.")
+    print("Choose a question, type your own, or switch furniture:")
+    for i, question in enumerate(questions, 1):
+        print(f"{i}. {question}")
+    print("f. Switch furniture")
+    print("0. Quit")
 
-    keuze = input("> ")
+    choice = input("> ")
 
-    if keuze.lower() in ["0", "exit", "quit"]:
-        print("Dag! 👋")
+    if choice.lower() in ["0", "exit", "quit"]:
+        print("Goodbye! 👋")
         break
 
-    # Vaste vraag geselecteerd
-    if keuze.isdigit() and int(keuze) in [1, 2, 3]:
-        user_input = vragen[int(keuze) - 1]
-    else:  # vrije input
-        user_input = keuze
+    if choice.lower() == "f":
+        # Switch furniture
+        while True:
+            print("\nWhich piece of furniture would you like to speak to?")
+            for i, furniture in enumerate(furniture_data, 1):
+                print(f"{i}. {furniture['title']}")
+            print("0. Cancel")
+            f_choice = input("> ")
+            if f_choice.lower() in ["0", "cancel"]:
+                break
+            if f_choice.isdigit() and 1 <= int(f_choice) <= len(furniture_data):
+                furniture_title = furniture_data[int(f_choice) - 1]["title"]
+                print(f"Switched to {furniture_title} ✅")
+                break
+            else:
+                print("Invalid choice. Please select a number from the list.")
+        continue
 
-    antwoord = chat_with_furniture(user_input, furniture_title)
-    print(f"\n{furniture_title}: {antwoord}\n")
+    # Standard question selected
+    if choice.isdigit() and 1 <= int(choice) <= len(questions):
+        user_input = questions[int(choice) - 1]
+    else:  # custom input
+        user_input = choice
+
+    answer = chat_with_furniture(user_input, furniture_title)
+    print(f"\n{furniture_title}: {answer}\n")

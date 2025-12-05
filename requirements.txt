@@ -1,4 +1,4 @@
-transformers>=4.35.0
+transformers>=4.50.0
 accelerate>=0.24.0
 bitsandbytes>=0.41.0
 sentence-transformers>=2.2.2
