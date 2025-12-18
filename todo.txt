@@ -1,4 +1,0 @@
-- geschikte meubels kiezen
-- geschikt LLM kiezen:https://huggingface.co/google/gemma-3-1b-it
-- prompt fine tunen
-- vragen kiezen
