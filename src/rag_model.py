@@ -13,7 +13,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Loading {model_name} on {device}...")
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = Gemma3ForCausalLM.from_pretrained(model_name).eval().to(device)
-print("Model loaded ✅")
+print("Model loaded")
 
 # Function to chat with a furniture piece
 def chat_with_furniture(user_input, furniture_title):
