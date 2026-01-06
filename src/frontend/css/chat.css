@@ -1,0 +1,144 @@
+.chat-container-wrapper {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  background-color: rgba(92, 64, 51, 0.85); 
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.furniture-panel {
+  flex: 1;
+  max-width: 350px;
+  text-align: center;
+  background-color: #fff; 
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.furniture-panel img {
+  width: 100%;
+  border-radius: 20px;
+  border: 3px solid goldenrod; 
+  margin-bottom: 0.5rem;
+}
+
+.furniture-name {
+  margin-top: 0.5rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+#switch-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: goldenrod; 
+  color: #5C4033;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#switch-btn:hover {
+  background: #9e0a24;
+}
+
+.chat-panel {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  background-color: #fff; 
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+#chat-box {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1rem;
+  height: 400px;
+  overflow-y: auto;
+  background: #f9f9f9;
+  margin-bottom: 1rem;
+}
+
+.chat-message {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.user {
+  background: #d0e7ff;
+  align-self: flex-end;
+  text-align: right;
+  border: 1px solid goldenrod;
+}
+
+.bot {
+  background: #fff3e6;
+  align-self: flex-start;
+  text-align: left;
+  border: 1px solid #ff6600;
+}
+
+.question-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.question-buttons button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: goldenrod; 
+  color: #5C4033;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.question-buttons button:hover {
+  background: rgb(166, 126, 24);
+}
+
+.chat-message {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  max-width: 80%;
+  word-wrap: break-word;
+  font-weight: 500;
+}
+
+
+.user {
+  background: goldenrod;
+  align-self: flex-end;
+  text-align: right;
+  color: #5C4033;
+  border: #5C4033;
+}
+
+
+.bot {
+  background: #f5e6d0; 
+  align-self: flex-start;
+  text-align: left;
+  border: 1px solid goldenrod; 
+  color: #5C4033; 
+}
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Furniture Chatbot</title>
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+
+<body>
+
+<header>
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="chat.html" class="active">Speeddaten</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="chat-container-wrapper">
+
+  <div class="furniture-panel">
+    <img id="furniture-img" alt="Selected Furniture">
+    <div id="furniture-name" class="furniture-name"></div>
+    <button id="switch-btn">Switch furniture</button>
+  </div>
+
+  <div class="chat-panel">
+    <div id="chat-box"></div>
+
+    <div class="question-buttons">
+      <button id="q0">Tell me something about your origin and style.</button>
+      <button id="q1">What makes you unique compared to other pieces of furniture?</button>
+      <button id="q2">Have you ever experienced an interesting event?</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Furniture Chatbot</title>
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/furniture.css">
+</head>
+
+<body class="homepage">
+
+<header>
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="chat.html">Speeddaten</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="container">
+  <h1>The art of speeddating</h1>
+  <p>Select a piece of furniture to start the conversation:</p>
+</div>
+
+<div class="furniture-container">
+
+  <div class="furniture-card"
+    onclick="selectFurniture(
+      'Dollhouse Petronella Oortman',
+      'https://iiif.micr.io/vacBr/0,0,3168,2872/^600,/0/default.webp',
+      '/images/dollhouse_after.jpg'
+    )">
+    <img src="https://iiif.micr.io/vacBr/0,0,3168,2872/^600,/0/default.webp"
+         alt="Dollhouse Petronella Oortman">
+    <div class="furniture-title">Dollhouse Petronella Oortman</div>
+  </div>
+
+  <div class="furniture-card"
+    onclick="selectFurniture(
+      'Cupboard Herman Doomer',
+      'https://iiif.micr.io/VPSbR/0,0,6158,8217/^600,/0/default.webp',
+      '/images/cupboard_after.jpg'
+    )">
+    <img src="https://iiif.micr.io/VPSbR/0,0,6158,8217/^600,/0/default.webp"
+         alt="Cupboard Herman Doomer">
+    <div class="furniture-title">Cupboard Herman Doomer</div>
+  </div>
+
+</div>
+
+<script>
+function selectFurniture(title, image, afterImage) {
+  localStorage.setItem("selectedFurnitureTitle", title);
+  localStorage.setItem("selectedFurnitureImage", image);
+  localStorage.setItem("selectedFurnitureAfterImage", afterImage);
+  window.location.href = "/chat";
+}
+</script>
+
+</body>
+</html>

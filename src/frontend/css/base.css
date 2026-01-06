@@ -1,0 +1,42 @@
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fafafa;
+  color: #333;
+}
+
+body.homepage {
+  background-image: url('../images/background_home.png'); 
+  background-size: cover;       
+  background-position: center;  
+  background-repeat: no-repeat; 
+  min-height: 100vh;            
+}
+
+body.speeddate{
+  background-image: url('../images/background_speeddate.png'); 
+  background-size: cover;      
+  background-position: center; 
+  background-repeat: no-repeat; 
+  min-height: 100vh;            
+
+}
+
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
