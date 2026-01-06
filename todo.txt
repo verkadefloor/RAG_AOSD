@@ -2,3 +2,9 @@
 - geschikt LLM kiezen:https://huggingface.co/google/gemma-3-1b-it
 - prompt fine tunen
 - vragen kiezen
+
+GIT 
+- git branch
+- git add .
+- git commit -m "comment"
+- git push -u origin main

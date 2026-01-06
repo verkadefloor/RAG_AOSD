@@ -1,4 +1,5 @@
 from rag_model import chat_with_furniture
+from text_to_speech import speak
 import json
 
 # Load furniture data
@@ -16,7 +17,7 @@ while True:
 
     choice = input("> ")
     if choice.lower() in ["0", "exit", "quit"]:
-        print("Goodbye! 👋")
+        print("Goodbye!")
         exit()
 
     if choice.isdigit() and 1 <= int(choice) <= len(furniture_data):
@@ -43,7 +44,7 @@ while True:
     choice = input("> ")
 
     if choice.lower() in ["0", "exit", "quit"]:
-        print("Goodbye! 👋")
+        print("Goodbye!")
         break
 
     if choice.lower() == "f":
@@ -58,7 +59,7 @@ while True:
                 break
             if f_choice.isdigit() and 1 <= int(f_choice) <= len(furniture_data):
                 furniture_title = furniture_data[int(f_choice) - 1]["title"]
-                print(f"Switched to {furniture_title} ✅")
+                print(f"Switched to {furniture_title}")
                 break
             else:
                 print("Invalid choice. Please select a number from the list.")
@@ -72,3 +73,10 @@ while True:
 
     answer = chat_with_furniture(user_input, furniture_title)
     print(f"\n{furniture_title}: {answer}\n")
+
+    # accent van huidig meubel
+    furniture = next(item for item in furniture_data if item["title"] == furniture_title)
+    accent = furniture.get("accent", "american")
+
+    speak(answer, accent)
+

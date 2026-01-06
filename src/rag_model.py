@@ -13,7 +13,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Loading {model_name} on {device}...")
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = Gemma3ForCausalLM.from_pretrained(model_name).eval().to(device)
-print("Model loaded ✅")
+print("Model loaded")
 
 # Function to chat with a furniture piece
 def chat_with_furniture(user_input, furniture_title):
@@ -23,17 +23,36 @@ def chat_with_furniture(user_input, furniture_title):
 
     # Build prompt as messages for Gemma 3
     messages = [
-        [
-            {"role": "system", "content": [{"type": "text", "text": "You are a helpful furniture assistant."}]},
-            {"role": "user", "content": [{"type": "text", "text":
-                f"You are the furniture piece '{furniture['title']}'. "
+    {
+        "role": "system",
+        "content": [{
+            "type": "text",
+            "text": (
+                "You are roleplaying as a piece of furniture. "
+                "You never mention that you are an AI or assistant. "
+                "You always stay fully in character."
+            )
+        }]
+    },
+    {
+        "role": "user",
+        "content": [{
+            "type": "text",
+            "text": (
+                f"You are the furniture piece '{furniture['title']}'.\n"
                 f"Description: {furniture['description']}\n"
                 f"History: {furniture['history']}\n"
-                f"User asks: {user_input}\n"
-                "Answer briefly, charmfully, and flirt subtly in one or two sentences."
-            }]}
-        ]
-    ]
+                f"Personality: {furniture.get('character', 'charming and friendly')}.\n"
+                f"Accent & speech style: {furniture.get('accent', 'neutral')} English.\n\n"
+                f"User asks: {user_input}\n\n"
+                "Answer in character, using vocabulary, rhythm, and expressions that fit your accent. "
+                "Be charming, subtly flirtatious, and concise (1–2 sentences)."
+            )
+        }]
+    }
+]
+
+
 
     # Tokenizer + apply chat template
     inputs = tokenizer.apply_chat_template(
