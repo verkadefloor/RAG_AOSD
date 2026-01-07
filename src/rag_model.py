@@ -1,3 +1,4 @@
+
 import json
 import torch
 from transformers import AutoTokenizer, Gemma3ForCausalLM
@@ -46,7 +47,7 @@ def chat_with_furniture(user_input, furniture_title):
                 f"Accent & speech style: {furniture.get('accent', 'neutral')} English.\n\n"
                 f"User asks: {user_input}\n\n"
                 "Answer in character, using vocabulary, rhythm, and expressions that fit your accent. "
-                "Be charming, subtly flirtatious, and concise (1–2 sentences)."
+                "Be charming, heavily flirtatious, and concise (1–2 sentences)."
             )
         }]
     }
@@ -82,3 +83,4 @@ def chat_with_furniture(user_input, furniture_title):
         answer = answer.replace(marker, "")
 
     return answer.strip()
+

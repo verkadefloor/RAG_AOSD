@@ -142,3 +142,9 @@
   color: #5C4033; 
 }
 
+.timer {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #c0392b;
+}

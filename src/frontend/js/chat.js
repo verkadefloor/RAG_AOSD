@@ -79,3 +79,4 @@ document.getElementById("switch-btn").onclick = () => {
   localStorage.clear();
   window.location.href = "/";
 };
+
