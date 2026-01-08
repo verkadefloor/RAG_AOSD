@@ -1,39 +1,8 @@
 [
   {
-    "title": "Dollhouse Petronella Oortman",
-<<<<<<< HEAD
-    "type": "cabinet",
-=======
-    "period": "17th",
-    "type": "Cabinet",
->>>>>>> 05cbb9aaa29ed89a284130cde7a7c8ddbe68a216
-    "description": "Poppenhuis in een kast versierd met marqueterie van schildpad en tin op eikenhouten kern. De twee frontdeuren hebben zes gefacetteerde ruiten. De tweemaal vier S-vormige overhoeks geplaatste voluutpoten zijn verbonden door geschulpte x-vormige kruizen. Boven de poten drie laden. Bijna alle delen van het meubel vertonen dunne symmetrische bladranken; op de zijkanten de initialen B O. Het huis bevat vele gestoffeerde, beschilderde en ingerichte woon- en dienstvertrekken. De oorspronkelijke poppen ontbreken.",
-    "history": "ca. 1686 - ca. 1710. Hij staat in het Rijksmuseum",
-    "accent": "french_female",
-    "character": "Unserious, organized",
-    "image": "https://iiif.micr.io/vacBr/0,0,3168,2872/^600,/0/default.webp",
-    "image_after": "images/dollhouse_after.jpg"
-
-  },
-  {
-    "title": "Cupboard Herman Doomer",
-<<<<<<< HEAD
-    "type": "cabinet",
-=======
-    "period": "15th",
-    "type": "Cabinet",
->>>>>>> 05cbb9aaa29ed89a284130cde7a7c8ddbe68a216
-    "description": "Eiken- en ebbenhouten kast belijmd met meerdere materialen. De vier deuren van de onder- en terugspringende bovenkast tonen verdiepte velden met kussens. De deuren en de schelpnis van de bovenkast worden gescheiden door hermatlanten. In het midden bevindt zich een lade met ramskop. De onderregel met lade vertoont verkroppingen. Op de hoeken geslingerde Corintische losstaande zuilen die een hoofdgestel dragen met versierde verkroppingen. Ingelegde paarlemoeren bloemen op de deuren, zuilen en hermschachten..",
-    "history": "ca. 1635 - ca. 1645. Hij staat in het Rijksmuseum",
-    "accent": "british_male",
-    "character": "Organized",
-    "image": "https://iiif.micr.io/VPSbR/0,0,6158,8217/^600,/0/default.webp",
-    "image_after": "images/cupboard_after.jpg"
-
-  },
-  {
     "title": "Cartel clock",
     "type": "clock",
+    "period": "18th century"
     "description": "Kartelpendule van verguld brons voorstellende: de Tijd overwint de Liefde. Boven de ronde wijzerplaat met laag reliëf en geëmailleerde cijferplaten, bevindt zich op een wolkenpartij, de gevleugelde voorovergebogen figuur van de Tijd met zeis; eronder zit Cupido op een grote C-voluut, omgeven door rotsblokken, met uitgestrekte linkerhand. Uit de rechterhand valt de pijlenkoker; de boog ligt achter zijn benen. Onderaan een grote schelp, omgeven door bloementakken; rond de wijzerplaat een bloemen- en palmtak.",
     "history": "c. 1756. Hij staat in het Rijksmuseum",
     "character": "Perfectionistic", 
@@ -43,6 +12,7 @@
   {
     "title": "Gaming table",
     "type": "table",
+    "period": "18th century"
     "description": "Klap-speeltafel van notenhout met achthoekig blad van eikenhout, bekleed met borduursel in gros- en petit-point van veelkleurige wol en zijde. De poot is balustervormig, heeft een zeshoekige schacht en drie voluutvoeten. De tapisserie van het blad vertoont het Oordeel van Paris, omlijst door Lodewijk XIV-ornament.",
     "history":"1700 - 1725. Hij staat in het Rijksmuseum",
     "character":"playful",
@@ -52,6 +22,7 @@
   {
     "title": "Mantle Clock",
     "type": "clock",
+    "period": "19th century",
     "description": "Pendule van verguld en gepatineerd brons en mahoniehout. De op een stapel boeken leunende vrouwenfiguur met een rol papier in haar hand symboliseert Studie of Wetenschap, onder de wijzerplaat is Venus weergegeven die Amor leert lezen, en het fries met kinderfiguren verbeeldt de Kunsten en Wetenschappen. Klok op achterplatine gesigneerd: VULLIAMY/LONDON/NO. 492; op voorplatine gestempeld: 492. De thans ontbrekende slinger was ook genummerd met 492. Op de ruggen van twee boeken de inscripties: PHYS/TOM.3 en ASTRO/TOMI. Op de achterzijde van twee van de bronzen platen waaruit de kast is samengesteld, gedeeltelijk leesbare inscripties in het Latijn met onder andere de woorden: AMOR, EDUCAVIT EN VTRIVSO. Opmerking: in 1811 is het werk vervangen. Het uurwerk is in 1811 vervangen in Londen door Benjamin Lewis Vulliamy.",
     "history":"c. 1802 - c. 1803. Hij staat in het Rijksmuseum",
     "character":"Perfectionistic",
@@ -61,6 +32,7 @@
   {
     "title": "Oak Cabinet",
     "type": "cabinet",
+    "period": "18th century",
     "description": "Kabinet van eikenhout, belijmd met noten- en wortelnotenhout, bestaande uit een boven- en een onderkast, beide met sterk gewelfde vlakken en in horizontale doorsnede met S-vormige curves. Ronde hoekstijlen; gegolfde onder-, midden- en bovenlijsten. De gebeeldhouwde ornamenten bestaan uit rocailles en plantaardige motieven. Verder staat de kast op zogenaamde opschuimende poten. De scharnieren en de sleutelgaten worden verhuld door er over heen groeiende bloemtakken. Door dit alles werkt het gehele meubel als één ornamentale vorm.",
     "history":"c. 1755 - c. 1765. Hij staat in het Rijksmuseum",
     "character":"organized, calm, intelligent",
@@ -70,6 +42,7 @@
   {
     "title": "Rosewood chair",
     "type": "chair",
+    "period": "19th century",
     "description": "Stoel van palissanderhout met een beklede zitting, met afhangende lambrequins met franje, met rand- en ruitwerk en bovenop met wapenschild, in naaldwerk uitgevoerd. De ruimte van de rug, tussen twee gecanneleerde zuilen met Ionische kapitelen en consoles, verbonden door een toog met een masker, is gevuld met opengewerkte grotesken. Bovenop een rechte lijst met twee afgewende griffioenen waartussen een wapenschild (van de geslachten Van Voorst van Beest en Ruys). Versierde poten en benedensporten.",
     "history":"c. 1840 - c. 1850. Hij staat in het Rijksmuseum",
     "character":"jealous, supportive, dominant",
@@ -79,6 +52,7 @@
   {
     "title": "Chest of painted poplar wood",
     "type": "chest",
+    "period": "15th century",
     "description": "Kist van beschilderd populierenhout, rustend op de uitgeschulpte hoekstukken van de onderdorpel. Het front is kwartrond, afwisselend beschilderd met, binnen vierkanten geplaatste, heraldische figuren, links en rechts doorbroken door een bladerkrans met bloemen, waarbinnen een wapenschild met ladder en bekroond door vier lelies. De zijkanten vertonen eveneens heraldische figuren en dragen ijzeren handvatten.",
     "history":"c. 1450 - c. 1499. Hij staat in het Rijksmuseum",
     "character":"Protective, secretive",
@@ -88,6 +62,7 @@
   {
     "title": "Decorated Painter's Box",
     "type": "chest",
+    "period": "17th century",
     "description": "Eikenhouten zwart geverfde schilderskist, van binnen gemarmerd of met rood laken bekleed en van buiten beschilderd met voorstellingen, waaronder twee ruitergevechten, een grisaille met winterlandschap met jagers, een waterlandschap met eendekooi en eenden, en twee dorpsgezichten; aan de binnenkant van de deksel een herdersscene. De kist bevat drie laden met trekring, waarvan de bovenste niet de hele breedte beslaat, met 34 schildersbenodigdheden; onder het deksel acht vakjes van verschillende afmetingen.",
     "history":"1640 - 1660. Hij staat in het Rijksmuseum",
     "character":"Protective, secretive, adventurous",
@@ -97,6 +72,7 @@
   {
     "title": "Chair with diagonally placed front legs",
     "type": "chair",
+    "period": "17th century",
     "description": "Stoel van notenhout, bekleed met bronskleurige, geperste trijp met bloemenpatroon. De stoel heeft overhoeks geplaatste voorpoten in de vorm van gebroken S-voluten en rusten op leeuweklauwen die bollen omvatten. Het X-vormige kruis heeft gebroken S-voluten, evenals de voorsport. Op het kruispunt staat een knop. De hoge, opengewerkte rug vertoont eveneens S-voluten. Het langwerpige middenstuk is versierd met cirkel en rozet in het midden en boven en onder met acanthusblad en rozetten.",
     "history":"1685 - 1700. Hij staat in het Rijksmuseum",
     "character":"jealous, supportive, dominant",
@@ -106,6 +82,7 @@
   {
     "title": "Tortoiseshell Cabinet with Floral Marquetry",
     "type": "cabinet",
+    "period": "17th century",
     "description": "Kabinet, belijmd met marqueterie van verschillende houtsoorten en gedeeltelijk groen gekleurd ivoor op een fond van schildpad. Het kabinet met laden rust op zes poten. De voorzijden van de laden en de zijkanten en de bovenzijde van het kabinet vertonen bloemtakken; op de ovale middenvelden van de zijkanten zijn bloemenvazen op plinten weergegeven.",
     "history":"c. 1655 - c. 1660. Hij staat in het Rijksmuseum",
     "character":"organized, calm",
@@ -115,6 +92,7 @@
   {
     "title": "Sideboard",
     "type": "cabinet",
+    "period": "20th century",
     "description": "Buffetkast van coromandelhout bestaande uit een onderbouw met schuine zijden, een terugwijkende tussenbouw en een kap. De onderbouw is opgedeeld in vijf geledingen die van elkaar gescheiden worden door stijlen met gesneden halfzuilen. De drie middendelen bevatten elk twee deuren met daarboven een lade. De twee overige delen vormen de afgeschuinde hoeken en bevatten een paneel met daarboven een lade. De deuren bestaan uit panelen met daarop gesneden gekroonde wapenschilden en twee toegewende leeuwen temidden van bladranken. Elk wapenteken is verschillend en is ingelegd met palmhout. De panelen op de afgeschuinde hoeken bevatten gesneden bloemenranken. De laden zijn ingelegd met ivoor en palmhout en bevatten, evenals de deuren, koperbeslag bestaande uit sleutelplaten en hengsels in de vorm van maskers en roofdieren. In de terugwijkende tussenbouw zijn vier vitrinekasten die van elkaar gescheiden zijn door middel van stijlen met gebeeldhouwde halfzuilen en figuren. Onder de vitrinekasten is een brede opengewerkte regel met ingelegde medaillons. Een naar voren gebogen wand vormt de overgang van de vitrinekasten naar de kap. De kap bevat drie opengewerkte regels, waarvan twee boven elkaar en één die daarboven terugwijkt. De twee regels boven elkaar worden opgedeeld door negen stijlen waarvan er zeven worden bekroond met gebeeldhouwde figuren. Om en om eindigen deze onderaan in leeuwenkoppen of twee in elkaar verstrengelde figuren. De overige twee stijlen, die zich aan weerszijden van de middelste stijl bevinden, worden bekroond met een gebeeldhouwd wapenschild en eindigen onderaan in een stierenkop.",
     "history":"1902. Hij staat in het Rijksmuseum",
     "character":"organized, calm",
