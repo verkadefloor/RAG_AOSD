@@ -1,0 +1,69 @@
+.end-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; /* Zorgt dat hij mooi in het midden staat */
+  padding: 2rem;
+}
+
+.end-card {
+  background-color: #fff;
+  color: #333;
+  max-width: 600px;
+  padding: 3rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.end-card h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #40474F; /* Je huisstijl donkergrijs */
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #888;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.content-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+/* De knop naar het museum */
+.museum-btn {
+  display: inline-block;
+  background-color: #d9534f; /* Een opvallende kleur (of gebruik #40474F) */
+  color: white;
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: transform 0.2s, background-color 0.2s;
+  margin-bottom: 1rem;
+}
+
+.museum-btn:hover {
+  background-color: #c9302c;
+  transform: translateY(-3px);
+  color: white;
+}
+
+/* Linkje voor opnieuw proberen */
+.retry-link {
+  display: block;
+  margin-top: 1rem;
+  color: #666c72;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.retry-link:hover {
+  color: #333;
+}

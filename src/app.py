@@ -3,8 +3,8 @@ import json
 import os
 import base64
 import torch
-from rag_model import chat_with_furniture  # blijft hetzelfde
-from text_to_speech import speak           # optioneel, blijft hetzelfde
+from rag_model import chat_with_furniture  
+from text_to_speech import speak           
 
 app = Flask(
     __name__,
@@ -63,7 +63,9 @@ def ask():
         "audio": audio_base64
     })
 
-
+@app.route("/end")
+def end_page():
+    return send_from_directory(app.template_folder, "end.html")
 # -------------------------
 # Run Flask
 # -------------------------

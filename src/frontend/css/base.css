@@ -1,29 +1,24 @@
-
+/* --- Base Styles & Typography --- */
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #fafafa;
   color: #333;
 }
 
-body.homepage {
-  background-image: url('../images/background_home.png'); 
-  background-size: cover;       
-  background-position: center;  
-  background-repeat: no-repeat; 
-  min-height: 100vh;            
+h1 {
+  font-size: 4em;
+  font-weight: bold;
+  margin: 0;
+  line-height: 1.2;
 }
 
-body.speeddate{
-  background-image: url('../images/background_speeddate.png'); 
-  background-size: cover;      
-  background-position: center; 
-  background-repeat: no-repeat; 
-  min-height: 100vh;            
-
+h2 {
+  font-size: 2em;
+  margin: 0;
+  font-weight: 400; /* Iets lichter voor contrast */
 }
-
 
 a {
   text-decoration: none;
@@ -39,4 +34,39 @@ ul {
 img {
   max-width: 100%;
   display: block;
+}
+
+/* --- Layout Containers --- */
+.container {
+  max-width: 1200px;
+  margin: 4rem auto 2rem; /* Iets meer ruimte bovenin */
+  padding: 0 2rem;
+  text-align: center;
+  color: white; /* Zorg dat dit leesbaar is op je achtergrond */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Helpt leesbaarheid op foto's */
+}
+
+/* --- Backgrounds --- */
+body.homepage {
+  background-image: url('../images/background_home.webp'); 
+  background-size: cover;       
+  background-position: center;  
+  background-repeat: no-repeat; 
+  min-height: 100vh;            
+}
+
+body.speeddate {
+  background-image: url('../images/background_speeddate.png'); 
+  background-size: cover;      
+  background-position: center; 
+  background-repeat: no-repeat; 
+  min-height: 100vh;            
+}
+
+body.end {
+  background-image: url('../images/background_end.webp'); 
+  background-size: cover;      
+  background-position: center; 
+  background-repeat: no-repeat; 
+  min-height: 100vh;            
 }

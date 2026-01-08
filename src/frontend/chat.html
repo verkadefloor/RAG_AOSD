@@ -3,39 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Furniture Chatbot</title>
+  <title>Speeddate with Furniture</title>
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/navbar.css">
-  <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/chat.css"> 
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="speeddate">
 
-<header>
-  <nav class="navbar">
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="chat.html" class="active">Speeddaten</a></li>
-    </ul>
-  </nav>
-</header>
-
-<div class="chat-container-wrapper">
-
+<div class="speeddate-interface">
+  
   <div class="furniture-panel">
-    <img id="furniture-img" alt="Selected Furniture">
-    <div id="furniture-name" class="furniture-name"></div>
-    <button id="switch-btn">Switch furniture</button>
-  </div>
+    <div id="timer-display" class="timer">05:00</div>
+
+    <div class="image-frame" id="image-stack-container">
+      <img id="img-normal" class="img-layer" alt="Furniture Normal">
+      
+      <img id="img-revealed" class="img-layer revealed-state" alt="Furniture Revealed">
+    </div>
+    <h2 id="furniture-name" class="furniture-title">Loading...</h2>
+    
+    <button id="next-btn" class="next-button">Next Date ➔</button>
+</div>
 
   <div class="chat-panel">
-    <div id="chat-box"></div>
+    <div id="chat-box" class="chat-box">
+      </div>
 
-    <div class="question-buttons">
-      <button id="q0">Tell me something about your origin and style.</button>
-      <button id="q1">What makes you unique compared to other pieces of furniture?</button>
-      <button id="q2">Have you ever experienced an interesting event?</button>
+    <div class="input-area">
+      <p class="instruction-text">Ask a question to get to know each other:</p>
+      <div class="question-buttons">
+        <button id="q0" class="chat-btn">Tell me about your origin</button>
+        <button id="q1" class="chat-btn">What makes you unique?</button>
+        <button id="q2" class="chat-btn">Any interesting events?</button>
+      </div>
     </div>
   </div>
 
@@ -44,4 +50,3 @@
 <script src="js/chat.js"></script>
 </body>
 </html>
-
