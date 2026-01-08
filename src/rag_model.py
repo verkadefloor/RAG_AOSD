@@ -1,75 +1,94 @@
 import json
-import torch
-from transformers import AutoTokenizer, Gemma3ForCausalLM
+from openai import OpenAI
 
 # -------------------------
-# Detect device
+# Configuration
 # -------------------------
-if torch.backends.mps.is_available():
-    device = torch.device("mps")
-    print("Using MPS on Mac")
-else:
-    device = torch.device("cpu")
-    print("Using CPU")
+client = OpenAI(
+    base_url="http://192.168.1.201:1234/v1",
+    api_key="lm-studio"
+)
 
 # -------------------------
-# Load furniture data
+# Schema Definition
+# -------------------------
+# We strictly define that "options" must be QUESTIONS from the USER'S perspective.
+FURNITURE_RESPONSE_SCHEMA = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "furniture_response",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "description": "The furniture's response to the user. Flirty and in-character."
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "A short question (under 10 words) that the USER might want to ask the furniture next."
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                }
+            },
+            "required": ["message", "options"],
+            "additionalProperties": False
+        }
+    }
+}
+
+# -------------------------
+# Load Data
 # -------------------------
 with open("data/raw/furniture_data.json", "r", encoding="utf-8") as f:
     furniture_data = json.load(f)
 
 # -------------------------
-# Load Gemma 3 model
-# -------------------------
-model_name = "google/gemma-3-1b-it"
-
-print(f"Loading {model_name} on {device} ...")
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = Gemma3ForCausalLM.from_pretrained(model_name).eval().to(device)
-print("Model loaded")
-
-# -------------------------
-# Chat function
+# Chat Function
 # -------------------------
 def chat_with_furniture(user_input, furniture_title):
     furniture = next((item for item in furniture_data if item["title"] == furniture_title), None)
     if not furniture:
-        return f"Furniture '{furniture_title}' not found."
+        return {"error": f"Furniture '{furniture_title}' not found."}
 
-    # Compact prompt: alleen title, description, history
     messages = [
-        [
-            {"role": "system", "content": [{"type": "text", "text": "You are a helpful furniture assistant."}]},
-            {"role": "user", "content": [{"type": "text", "text":
-                f"You are the furniture piece '{furniture['title']}'. "
+        {
+            "role": "system",
+            "content": (
+                "You are roleplaying as a piece of furniture. "
+                "Stay fully in character."
+            )
+        },
+        {
+            "role": "user",
+            "content": (
+                f"You are the furniture piece '{furniture['title']}'.\n"
                 f"Description: {furniture['description']}\n"
-                f"History: {furniture['history']}\n"
-                f"User asks: {user_input}\n"
-                "Answer briefly, charmfully, and flirt  in one or two sentences."
-                "Vary the way you start your responses naturally, so that each answer may begin differently."
-            }]}
-        ]
+                f"History: {furniture['history']}\n\n"
+                f"User asks: {user_input}\n\n"
+                "### INSTRUCTIONS ###\n"
+                "1. Answer the user in character (Flirty, playful, brief).\n"
+                "2. generate 3 follow-up QUESTIONS the USER can ask you.\n"
+                "   - The options must be from the USER'S perspective (e.g., 'Who built you?', NOT 'I was built by...').\n"
+                "   - Keep options short (max 10 words).\n"
+                "   - Make them relevant to your specific history.\n"
+            )
+        }
     ]
 
-    # Tokenizer + generate
-    inputs = tokenizer.apply_chat_template(
-        messages,
-        add_generation_prompt=True,
-        tokenize=True,
-        return_dict=True,
-        return_tensors="pt"
-    ).to(device)
+    try:
+        response = client.chat.completions.create(
+            model="gemma-3-1b-it", 
+            messages=messages,
+            temperature=0.7,
+            response_format=FURNITURE_RESPONSE_SCHEMA, 
+        )
 
-    with torch.inference_mode():
-        outputs = model.generate(**inputs, max_new_tokens=100)
+        return json.loads(response.choices[0].message.content)
 
-    full_answer = tokenizer.batch_decode(outputs)[0].strip()
-
-    # Clean up markers
-    start_marker = "<start_of_turn>model"
-    answer = full_answer.split(start_marker)[1] if start_marker in full_answer else full_answer
-    for marker in ["<end_of_turn>", "<think>", "</think>"]:
-        answer = answer.replace(marker, "")
-
-    return answer.strip()
-
+    except Exception as e:
+        return {"error": f"Error: {e}"}
