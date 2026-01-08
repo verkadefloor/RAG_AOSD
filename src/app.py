@@ -12,15 +12,13 @@ app = Flask(
     template_folder="frontend"
 )
 
-# -------------------------
+
 # Load furniture data
-# -------------------------
 with open("data/raw/furniture_data.json", "r", encoding="utf-8") as f:
     furniture_data = json.load(f)
 
-# -------------------------
+
 # Flask routes
-# -------------------------
 @app.route("/")
 def home():
     return send_from_directory(app.template_folder, "index.html")
@@ -56,7 +54,7 @@ def ask():
 
     answer = chat_with_furniture(question, furniture_title)
 
-    audio_base64 = ""  # optie voor TTS
+    audio_base64 = ""  #TTS (not working currently)
 
     return jsonify({
         "answer": answer,
@@ -66,10 +64,8 @@ def ask():
 @app.route("/end")
 def end_page():
     return send_from_directory(app.template_folder, "end.html")
-# -------------------------
+
 # Run Flask
-# -------------------------
 if __name__ == "__main__":
-    # Gebruik MPS op MacBook als beschikbaar
-    # anders fallback op CPU
+    # MPS for macbook
     app.run(host="0.0.0.0", port=8000, debug=True) 

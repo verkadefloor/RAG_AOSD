@@ -1,31 +1,29 @@
-// --- CONFIGURATIE ---
-const TIME_LIMIT_SECONDS = 5 * 60; // 5 minuten
+const TIME_LIMIT_SECONDS = 5 * 60;
 const MAX_ROUNDS = 3;
 const SWITCH_DELAY_MS = 3000;
-const REVEAL_DELAY_MS = 1500; // NIEUW: Wacht 1.5 seconde voor de onthulling start
+const REVEAL_DELAY_MS = 1500; 
 
-// --- GLOBALE VARIABELEN ---
+
 let currentFurniture = null;
 let matches = [];
 let viewedTitles = [];
 let roundCounter = 0;
 let timerInterval = null;
-let revealTimeout = null; // NIEUW: Om de onthulling te kunnen resetten
+let revealTimeout = null; 
 
-// --- DOM ELEMENTEN ---
 const furnitureNameEl = document.getElementById("furniture-name");
-// const furnitureImgEl = document.getElementById("furniture-img"); // <-- DEZE OUDE VERWIJDEREN
+
 const chatBox = document.getElementById("chat-box");
 const timerEl = document.getElementById("timer-display");
 const nextBtn = document.getElementById("next-btn");
 
-// NIEUWE ELEMENTEN VOOR DE BEELDEN
+
 const imgContainer = document.getElementById("image-stack-container");
 const imgNormalEl = document.getElementById("img-normal");
 const imgRevealedEl = document.getElementById("img-revealed");
 
 
-// 1. Start de applicatie (ONGECWIJZIGD)
+// start application
 async function initChat() {
   try {
     const response = await fetch('/get_furniture_list'); 
@@ -51,7 +49,7 @@ async function initChat() {
   }
 }
 
-// 2. Start een nieuwe ronde (StartNextRound - MINIMALE WIJZIGING)
+// Start next round
 function startNextRound() {
   if (roundCounter >= MAX_ROUNDS) { endSession(); return; }
   const availableCandidates = matches.filter(item => !viewedTitles.includes(item.title));
@@ -61,11 +59,11 @@ function startNextRound() {
   viewedTitles.push(currentFurniture.title);
   roundCounter++;
   
-  setupUI(); // <--- HIER GEBEURT HET NU
+  setupUI(); 
   startTimer(TIME_LIMIT_SECONDS);
 }
 
-// 3. Timer Logica (ONGECWIJZIGD)
+// Timer Logic
 function startTimer(duration) {
   if (timerInterval) clearInterval(timerInterval);
   let timer = duration;
@@ -86,47 +84,46 @@ function startTimer(duration) {
   }, 1000);
 }
 
-// 4. Sessie beëindigen (ONGECWIJZIGD)
+// End session
 function endSession() {
   if (timerInterval) clearInterval(timerInterval);
   window.location.href = "/end";
 }
 
-// --- 5. UI Setup (GROTE WIJZIGING VOOR TRANSITIE) ---
+// UI Setup 
 function setupUI() {
-  // A. Reset de vorige ronde
+
   if (revealTimeout) clearTimeout(revealTimeout); // Stop een lopende onthulling timer
   imgContainer.classList.remove("show-reveal");   // Zorg dat de 'after' foto weer verborgen is
 
-  // B. Vul de teksten
+
   furnitureNameEl.textContent = currentFurniture.title;
   chatBox.innerHTML = ""; 
   addToChat("bot", `Hello! I am candidate #${roundCounter}: ${currentFurniture.title}. You have 5 minutes.`);
 
-  // C. Laad BEIDE afbeeldingen in
+
   imgNormalEl.src = currentFurniture.image; 
-  // Hier laden we de 'after' image in de verborgen laag:
+
   imgRevealedEl.src = currentFurniture.image_after;
 
-  // Fallback alleen op de normale image voor nu
+
   imgNormalEl.onerror = () => { imgNormalEl.src = "images/fallback.png"; };
 
-  // D. Reset de knop
+
   if (nextBtn) {
     nextBtn.disabled = false;
     nextBtn.textContent = "Next Date ➔";
     nextBtn.style.cursor = "pointer";
   }
 
-  // E. Start de timer voor de onthulling!
-  // Na 1.5 seconde (REVEAL_DELAY_MS) voegen we de class toe die de CSS transitie start.
+ 
   revealTimeout = setTimeout(() => {
       imgContainer.classList.add("show-reveal");
       console.log("Revealing the true form!");
   }, REVEAL_DELAY_MS);
 }
 
-// 6. Chat Functies (ONGECWIJZIGD)
+// Chat Functions 
 function addToChat(sender, text) {
   const div = document.createElement("div");
   div.className = "chat-message " + sender;
@@ -168,7 +165,7 @@ async function askQuestion(qIdx) {
   }
 }
 
-// --- Event Listeners (ONGECWIJZIGD) ---
+// Event listeners 
 document.getElementById("q0").onclick = () => askQuestion(0);
 document.getElementById("q1").onclick = () => askQuestion(1);
 document.getElementById("q2").onclick = () => askQuestion(2);
@@ -180,7 +177,7 @@ if (nextBtn) {
     nextBtn.style.cursor = "wait";
     addToChat("user", "<em>I don't think this is a match. Next please!</em>");
     if (timerInterval) clearInterval(timerInterval);
-    // Ook de onthulling stoppen als die nog niet gebeurd is
+  
     if (revealTimeout) clearTimeout(revealTimeout);
     setTimeout(() => {
       startNextRound();

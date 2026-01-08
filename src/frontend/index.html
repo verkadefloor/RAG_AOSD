@@ -50,7 +50,6 @@
 </div>
 
 <script>
-  // Script om keuzes op te slaan en door te sturen
   document.getElementById('startBtn').addEventListener('click', function(e) {
     e.preventDefault(); 
     
@@ -60,7 +59,7 @@
     localStorage.setItem('selectedPeriod', period);
     localStorage.setItem('selectedType', type);
     
-    // Ga naar de Flask route
+
     window.location.href = "/chat"; 
   });
 </script>
