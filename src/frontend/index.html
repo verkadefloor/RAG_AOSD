@@ -1,67 +1,68 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Furniture Chatbot</title>
+  <title>Furniture Chatbot - Speeddating</title>
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/navbar.css">
-  <link rel="stylesheet" href="css/furniture.css">
+  <link rel="stylesheet" href="css/furniture.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body class="homepage">
 
-<header>
-  <nav class="navbar">
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="chat.html">Speeddaten</a></li>
-    </ul>
-  </nav>
-</header>
-
-<div class="container">
-  <h1>The art of speeddating</h1>
-  <p>Select a piece of furniture to start the conversation:</p>
-</div>
-
-<div class="furniture-container">
-
-  <div class="furniture-card"
-    onclick="selectFurniture(
-      'Dollhouse Petronella Oortman',
-      'https://iiif.micr.io/vacBr/0,0,3168,2872/^600,/0/default.webp',
-      '/images/dollhouse_after.jpg'
-    )">
-    <img src="https://iiif.micr.io/vacBr/0,0,3168,2872/^600,/0/default.webp"
-         alt="Dollhouse Petronella Oortman">
-    <div class="furniture-title">Dollhouse Petronella Oortman</div>
+<div class="main-content">
+  
+  <div class="container">
+    <h1>THE ART OF SPEEDDATING</h1>
+    <h2>A historical romance</h2>
   </div>
 
-  <div class="furniture-card"
-    onclick="selectFurniture(
-      'Cupboard Herman Doomer',
-      'https://iiif.micr.io/VPSbR/0,0,6158,8217/^600,/0/default.webp',
-      '/images/cupboard_after.jpg'
-    )">
-    <img src="https://iiif.micr.io/VPSbR/0,0,6158,8217/^600,/0/default.webp"
-         alt="Cupboard Herman Doomer">
-    <div class="furniture-title">Cupboard Herman Doomer</div>
+  <div class="filter-panel">
+    <div class="filter-row">
+      <label for="period">Choose your preferred time period</label>
+      <select id="period" name="period">
+        <option value="all">Select period</option>
+        <option value="17th">17th century</option>
+        <option value="18th">18th century</option>
+        <option value="19th">19th century</option>
+        <option value="all">All</option>
+      </select>
+    </div>
+
+    <div class="filter-row">
+      <label for="type">Choose your preferred furniture type</label>
+      <select id="type" name="type">
+        <option value="all">Select furniture</option>
+        <option value="cabinet">Cabinet</option>
+        <option value="chair">Chair</option>
+        <option value="table">Table</option>
+        <option value="all">All</option>
+      </select>
+    </div>
+
+    <a href="chat.html" class="start-button" id="startBtn">Start speeddating</a>
   </div>
 
 </div>
 
 <script>
-function selectFurniture(title, image, afterImage) {
-  localStorage.setItem("selectedFurnitureTitle", title);
-  localStorage.setItem("selectedFurnitureImage", image);
-  localStorage.setItem("selectedFurnitureAfterImage", afterImage);
-  window.location.href = "/chat";
-}
+  document.getElementById('startBtn').addEventListener('click', function(e) {
+    e.preventDefault(); 
+    
+    const period = document.getElementById('period').value;
+    const type = document.getElementById('type').value;
+
+    localStorage.setItem('selectedPeriod', period);
+    localStorage.setItem('selectedType', type);
+    
+
+    window.location.href = "/chat"; 
+  });
 </script>
 
 </body>
 </html>
-

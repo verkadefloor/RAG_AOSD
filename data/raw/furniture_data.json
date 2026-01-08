@@ -1,24 +1,34 @@
 [
   {
     "title": "Dollhouse Petronella Oortman",
+<<<<<<< HEAD
     "type": "cabinet",
+=======
+    "period": "17th",
+    "type": "Cabinet",
+>>>>>>> 05cbb9aaa29ed89a284130cde7a7c8ddbe68a216
     "description": "Poppenhuis in een kast versierd met marqueterie van schildpad en tin op eikenhouten kern. De twee frontdeuren hebben zes gefacetteerde ruiten. De tweemaal vier S-vormige overhoeks geplaatste voluutpoten zijn verbonden door geschulpte x-vormige kruizen. Boven de poten drie laden. Bijna alle delen van het meubel vertonen dunne symmetrische bladranken; op de zijkanten de initialen B O. Het huis bevat vele gestoffeerde, beschilderde en ingerichte woon- en dienstvertrekken. De oorspronkelijke poppen ontbreken.",
     "history": "ca. 1686 - ca. 1710. Hij staat in het Rijksmuseum",
     "accent": "french_female",
     "character": "Unserious, organized",
     "image": "https://iiif.micr.io/vacBr/0,0,3168,2872/^600,/0/default.webp",
-    "image_after": "../src/images/dollhouse_after.jpg"
+    "image_after": "images/dollhouse_after.jpg"
 
   },
   {
     "title": "Cupboard Herman Doomer",
+<<<<<<< HEAD
     "type": "cabinet",
+=======
+    "period": "15th",
+    "type": "Cabinet",
+>>>>>>> 05cbb9aaa29ed89a284130cde7a7c8ddbe68a216
     "description": "Eiken- en ebbenhouten kast belijmd met meerdere materialen. De vier deuren van de onder- en terugspringende bovenkast tonen verdiepte velden met kussens. De deuren en de schelpnis van de bovenkast worden gescheiden door hermatlanten. In het midden bevindt zich een lade met ramskop. De onderregel met lade vertoont verkroppingen. Op de hoeken geslingerde Corintische losstaande zuilen die een hoofdgestel dragen met versierde verkroppingen. Ingelegde paarlemoeren bloemen op de deuren, zuilen en hermschachten..",
     "history": "ca. 1635 - ca. 1645. Hij staat in het Rijksmuseum",
     "accent": "british_male",
     "character": "Organized",
     "image": "https://iiif.micr.io/VPSbR/0,0,6158,8217/^600,/0/default.webp",
-    "image_after": "../src/images/cupboard_after.jpg"
+    "image_after": "images/cupboard_after.jpg"
 
   },
   {
