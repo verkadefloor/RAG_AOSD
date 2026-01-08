@@ -1,4 +1,3 @@
-/* --- Base Styles & Typography --- */
 body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
@@ -17,7 +16,7 @@ h1 {
 h2 {
   font-size: 2em;
   margin: 0;
-  font-weight: 400; /* Iets lichter voor contrast */
+  font-weight: 400; 
 }
 
 a {
@@ -36,17 +35,17 @@ img {
   display: block;
 }
 
-/* --- Layout Containers --- */
+
 .container {
   max-width: 1200px;
-  margin: 4rem auto 2rem; /* Iets meer ruimte bovenin */
+  margin: 4rem auto 2rem; 
   padding: 0 2rem;
   text-align: center;
-  color: white; /* Zorg dat dit leesbaar is op je achtergrond */
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Helpt leesbaarheid op foto's */
+  color: white; 
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
 }
 
-/* --- Backgrounds --- */
+
 body.homepage {
   background-image: url('../images/background_home.webp'); 
   background-size: cover;       
@@ -56,7 +55,7 @@ body.homepage {
 }
 
 body.speeddate {
-  background-image: url('../images/background_speeddate.png'); 
+  background-color:#40474F;; 
   background-size: cover;      
   background-position: center; 
   background-repeat: no-repeat; 
@@ -69,4 +68,81 @@ body.end {
   background-position: center; 
   background-repeat: no-repeat; 
   min-height: 100vh;            
+}
+
+
+.privacy-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  border-top: 4px solid #40474F; 
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+  z-index: 1000; 
+  padding: 1.5rem 0;
+  font-family: 'Montserrat', sans-serif;
+  animation: slideUp 0.5s ease-out;
+}
+
+.privacy-banner__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.privacy-banner__header {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #40474F;
+  margin-bottom: 0.5rem;
+}
+
+.privacy-banner__description {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.5;
+  max-width: 800px;
+}
+
+.privacy-banner__actions {
+  flex-shrink: 0; 
+}
+
+.privacy-button {
+  background-color: #40474F;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 30px; 
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.privacy-button:hover {
+  background-color: #666c72;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .privacy-banner__inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .privacy-banner__description {
+    font-size: 0.85rem;
+  }
 }

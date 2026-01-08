@@ -1,103 +1,86 @@
-/* --- Layout Container --- */
-/* Dit is het donkere vlak, net als je filter panel op home */
+/* main container */
 .speeddate-interface {
-  background-color: #40474F; /* Zelfde donkergrijs */
+  background-color: #40474F;
+  height: 85vh; 
   max-width: 1100px;
-  margin: 3rem auto;
+  margin: 2rem auto; 
+  
   border-radius: 12px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-  display: flex;
+  
+  display: flex; 
   overflow: hidden;
-  min-height: 600px; /* Zorgt voor een lekkere grote chatbox */
 }
 
-/* --- Linker Kolom: Furniture Panel --- */
 .furniture-panel {
-  flex: 1;
-  background-color: #f5f1ec; /* Lichte beige tint voor contrast */
+  flex: 1; 
+  background-color: #f5f1ec;
   padding: 2rem;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
   border-right: 1px solid #ccc;
-  text-align: center;
+  
+  height: 100%; 
+  overflow: hidden; 
 }
 
-.image-frame {
-  width: 100%;
-  max-width: 300px;
-  height: 300px;
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  margin-bottom: 1.5rem;
-}
-
-.image-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-.furniture-title {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-}
-
-.furniture-subtitle {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 2rem;
-  font-style: italic;
-}
-
-/* --- Rechter Kolom: Chat Panel --- */
+/* Right side */
 .chat-panel {
-  flex: 2; /* De chat is 2x zo breed als de foto */
+  flex: 2; 
   background-color: #fafafa;
+  
   display: flex;
   flex-direction: column;
+  
+  height: 100%; 
 }
 
-/* Het scrollbare gedeelte */
+/* Message box */
 .chat-box {
-  flex: 1;
+  flex: 1; 
   padding: 2rem;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  
+  /* De scroll bar */
+  overflow-y: auto; 
+  scroll-behavior: smooth;
 }
 
-/* --- Chat Bubbles --- */
+/* Input area */
+.input-area {
+  background-color: #fff;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #eee;
+  flex-shrink: 0; 
+}
+
+/* other styling */
 .chat-message {
   max-width: 80%;
   padding: 12px 18px;
   border-radius: 18px;
   font-size: 0.95rem;
   line-height: 1.5;
-  position: relative;
   animation: fadeIn 0.3s ease;
 }
 
-/* Stijl voor de BOT (het meubel) */
 .chat-message.bot {
-  background-color: #e4ded6; /* Zacht beige/grijs */
+  background-color: #e4ded6;
   color: #333;
-  align-self: flex-start; /* Links uitlijnen */
+  align-self: flex-start;
   border-bottom-left-radius: 4px;
 }
 
-/* Stijl voor de GEBRUIKER (jij) */
 .chat-message.user {
-  background-color: #666c72; /* De kleur van je startknop */
+  background-color: #666c72;
   color: white;
-  align-self: flex-end; /* Rechts uitlijnen */
+  align-self: flex-end;
   border-bottom-right-radius: 4px;
 }
 
@@ -107,14 +90,12 @@
   margin-bottom: 4px;
   opacity: 0.8;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* --- Controls onderin --- */
-.input-area {
-  background-color: #fff;
-  padding: 1.5rem 2rem;
-  border-top: 1px solid #eee;
+.question-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .instruction-text {
@@ -124,13 +105,6 @@
   font-weight: 600;
 }
 
-.question-buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-/* --- Buttons --- */
 .chat-btn {
   background-color: transparent;
   border: 2px solid #666c72;
@@ -146,24 +120,78 @@
 .chat-btn:hover {
   background-color: #666c72;
   color: white;
-  transform: translateY(-2px);
 }
 
-.secondary-button {
-  background: none;
-  border: none;
-  text-decoration: underline;
-  color: #888;
-  cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
+/* Image styling  */
+.image-frame {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 300px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
 }
 
-.secondary-button:hover {
+.img-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: opacity 2.5s ease-in-out;
+}
+
+#img-revealed {
+  opacity: 0;
+  z-index: 2;
+}
+
+.image-frame.show-reveal #img-revealed {
+  opacity: 1;
+}
+
+.furniture-title {
+  font-size: 1.5rem;
   color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
 }
 
-/* --- Scrollbar mooi maken (optioneel) --- */
+.timer {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #d9534f;
+  margin-bottom: 1rem;
+  background: #fff;
+  padding: 5px 15px;
+  border-radius: 8px;
+}
+
+.next-button {
+  margin-top: 2rem;
+  background-color: white;
+  border: 2px solid #40474F;
+  color: #40474F;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  gap: 8px;
+}
+
+.next-button:hover {
+  background-color: #40474F;
+  color: white;
+}
+
+/* Scrollbar */
 .chat-box::-webkit-scrollbar {
   width: 8px;
 }
@@ -180,96 +208,79 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- Mobiel --- */
+/* Mobile layout */
 @media (max-width: 768px) {
   .speeddate-interface {
     flex-direction: column;
-    margin: 1rem;
     height: auto;
+    min-height: 100vh;
+    margin: 0;
+    border-radius: 0;
   }
-  .image-frame {
-    height: 200px;
-  }
-  .chat-box {
-    height: 300px; /* Vaste hoogte op mobiel */
+  
+  .chat-panel {
+    height: 60vh; 
   }
 }
 
-/* --- Timer Styling --- */
-.timer {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #d9534f; /* Een rode kleur voor urgentie */
-  margin-bottom: 1rem;
-  font-variant-numeric: tabular-nums; /* Zorgt dat cijfers niet verspringen */
-  background: #fff;
-  padding: 5px 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.next-button {
-  margin-top: 2rem;
-  background-color: white;
-  border: 2px solid #40474F; /* Donkergrijs randje */
-  color: #40474F;
-  padding: 10px 20px;
+.back-link {
+  background: none;
+  border: none;
+  color: #999; 
   font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
-  border-radius: 30px;
+  font-size: 0.85rem; 
+  font-weight: 600;
+  margin-top: 1.5rem; 
   cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Ruimte tussen tekst en pijltje */
+  text-decoration: none;
+  transition: color 0.3s ease;
+  display: block; 
   margin-left: auto;
   margin-right: auto;
 }
 
-.next-button:hover {
-  background-color: #40474F;
-  color: white;
-  transform: translateX(3px); /* Beweegt een klein beetje naar rechts */
+.back-link:hover {
+  color: #40474F; 
+  text-decoration: underline;
 }
 
-/* --- Image Transition Styles --- */
-
-/* De container moet 'relative' zijn zodat de plaatjes erin 'absolute' kunnen zijn */
-.image-frame {
-  position: relative;
-  width: 100%;
-  max-width: 300px;
-  height: 300px;
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  margin-bottom: 1.5rem;
-  overflow: hidden; /* Zorgt dat alles netjes binnen de boordjes blijft */
+/* --- Error styling --- */
+.chat-message.connection-error {
+  background-color: #fff3cd; 
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 15px;
+  border-radius: 12px;
+  animation: shake 0.5s; 
 }
 
-/* Stijl die voor BEIDE afbeeldingen geldt */
-.img-layer {
-  position: absolute; /* Hiermee stapelen we ze */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Zorgt dat het plaatje het kader vult zonder uitrekken */
-  border-radius: 4px;
-  transition: opacity 2.5s ease-in-out; /* De magie: een trage overgang van 2.5 seconde */
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
 }
 
-/* Specifieke stijl voor de 'after' afbeelding */
-#img-revealed {
-  opacity: 0;     /* Begin onzichtbaar */
-  z-index: 2;     /* Zorg dat deze BOVENOP de normale ligt */
+.error-mini-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%; 
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  filter: grayscale(100%); 
 }
 
-/* --- De 'Trigger' Class --- */
-/* Wanneer we met Javascript de class 'show-reveal' toevoegen aan de container,
-   wordt de 'revealed' afbeelding zichtbaar */
-.image-frame.show-reveal #img-revealed {
-  opacity: 1;
+.error-text {
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
 }

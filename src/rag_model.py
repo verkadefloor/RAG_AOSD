@@ -38,31 +38,17 @@ def chat_with_furniture(user_input, furniture_title):
 
     # Compact prompt: alleen title, description, history
     messages = [
-        {
-            "role": "system",
-            "content": [{
-                "type": "text",
-                "text": (
-                    "You are roleplaying as a piece of furniture. "
-                    "Never mention that you are an AI or assistant. "
-                    "Stay fully in character."
-                )
-            }]
-        },
-        {
-            "role": "user",
-            "content": [{
-                "type": "text",
-                "text": (
-                    f"You are the furniture piece '{furniture['title']}'.\n"
-                    f"Description: {furniture['description']}\n"
-                    f"History: {furniture['history']}\n\n"
-                    f"User asks: {user_input}\n"
-                    "Answer in character in 1 sentence."
-                    "Flirt with the user and keep your answers playful and brief."
-                )
-            }]
-        }
+        [
+            {"role": "system", "content": [{"type": "text", "text": "You are a helpful furniture assistant."}]},
+            {"role": "user", "content": [{"type": "text", "text":
+                f"You are the furniture piece '{furniture['title']}'. "
+                f"Description: {furniture['description']}\n"
+                f"History: {furniture['history']}\n"
+                f"User asks: {user_input}\n"
+                "Answer briefly, charmfully, and flirt  in one or two sentences."
+                "Vary the way you start your responses naturally, so that each answer may begin differently."
+            }]}
+        ]
     ]
 
     # Tokenizer + generate

@@ -69,4 +69,34 @@
 </script>
 
 </body>
+<div class="privacy-banner" id="privacyBanner" style="display: none;">
+  <div class="privacy-banner__inner">
+    <div class="privacy-banner__copy">
+      <div class="privacy-banner__header">Privacy & Data</div>
+      <div class="privacy-banner__description">
+        We use <strong>local storage</strong> in your browser to remember your preferences. 
+        Your chat conversations are processed by our AI to generate responses, but are <strong>not stored</strong> or shared with third parties.
+      </div>
+    </div>
+
+    <div class="privacy-banner__actions">
+      <button id="acceptPrivacy" class="privacy-button">
+        I understand
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  if (!sessionStorage.getItem('privacyBannerShown')) {
+    document.getElementById('privacyBanner').style.display = 'block';
+  }
+
+  document.getElementById('acceptPrivacy').addEventListener('click', function(e) {
+    e.preventDefault(); 
+    var banner = document.getElementById('privacyBanner');
+    banner.style.display = 'none'; 
+    sessionStorage.setItem('privacyBannerShown', 'true'); 
+  });
+</script>
 </html>
