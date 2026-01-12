@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 import json
-import os
-import base64
-import torch
+
 from rag_model import chat_with_furniture  
 from text_to_speech import speak           
 
