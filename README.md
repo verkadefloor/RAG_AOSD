@@ -10,27 +10,12 @@ This repository contains a Retrieval-Augmented Generation (RAG) chatbot that use
 * Runs locally on CPU or GPU.
 
 **Requirements:**
-* Python 3.9+
+* Python 3.9 - 3.13
 * GPU recommended for faster generation, CPU also works.
 * Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-
-
-
-## HuggingFace Gated Model Access
-google/gemma-3-1b-it is a gated model. To use it:
-
-* [Create a HuggingFace account](https://huggingface.co/join)
-* [Generate an Access Token](https://huggingface.co/settings/tokens)
-* Login locally in your terminal:
-```bash
-hf auth login
-```
-* Enter your token when prompted.
-* This only needs to be done once per machine.
-* Without a valid token, the model cannot be loaded.
 
 ## Running the Chatbot
 ```bash

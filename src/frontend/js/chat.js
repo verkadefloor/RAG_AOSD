@@ -186,8 +186,10 @@ function showConnectionError() {
 async function askQuestion(questionText) {
   if (!currentFurniture) return;
   
+  // 1. Add user's question to chat
   addToChat("user", questionText);
 
+  // 2. Disable buttons while thinking
   btn0.disabled = true; btn1.disabled = true; btn2.disabled = true;
 
   try {
@@ -210,7 +212,14 @@ async function askQuestion(questionText) {
     if (data.error) {
       addToChat("bot", "Error: " + data.error);
     } else {
+      // 3. Add the furniture's response to chat
       addToChat("bot", data.answer);
+
+      // 4. UPDATE BUTTONS (The new logic)
+      // Check if the backend provided new options
+      if (data.options && Array.isArray(data.options) && data.options.length > 0) {
+          updateButtons(data.options);
+      }
     }
 
   } catch (err) {
@@ -218,6 +227,7 @@ async function askQuestion(questionText) {
     showConnectionError();
     
   } finally {
+    // 5. Re-enable buttons
     btn0.disabled = false; btn1.disabled = false; btn2.disabled = false;
   }
 }

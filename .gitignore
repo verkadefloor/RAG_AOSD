@@ -1,3 +1,4 @@
 # Ignore todo and log files
 todo.txt
 *.log
+.env

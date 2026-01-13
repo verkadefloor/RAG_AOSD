@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 import json
-import os
-import base64
-import torch
+
 from rag_model import chat_with_furniture  
 from text_to_speech import speak           
 
@@ -45,19 +43,30 @@ def ask():
     furniture_title = data.get("furniture")
     question = data.get("question")
 
+    # Locate furniture data
     furniture = next(
         (f for f in furniture_data if f["title"].strip().lower() == furniture_title.strip().lower()),
         None
     )
+    
     if not furniture:
         return jsonify({"error": f"Furniture '{furniture_title}' not found."}), 404
 
-    answer = chat_with_furniture(question, furniture_title)
+    # Call the LLM function (which now returns a Dict, not a String)
+    # Expected format: {'message': "...", 'options': ["...", "...", "..."]}
+    response_data = chat_with_furniture(question, furniture_title)
 
-    audio_base64 = ""  #TTS (not working currently)
+    # Check if the LLM function returned an internal error
+    if "error" in response_data:
+        return jsonify({"error": response_data["error"]}), 500
 
+    # TTS Placeholder
+    audio_base64 = "" 
+
+    # Return the structured data to the frontend
     return jsonify({
-        "answer": answer,
+        "answer": response_data.get("message", "I am speechless..."), # The character text
+        "options": response_data.get("options", []),                  # The suggested questions
         "audio": audio_base64
     })
 
