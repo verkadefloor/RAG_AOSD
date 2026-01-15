@@ -190,7 +190,7 @@ def chat_with_furniture(user_input, furniture_title):
         "2. FLOW: If the user asks a question, answer it. If the conversation stalls, ask a question back.\n"
         "3. STYLE: Flirty but classy.\n"
         "4. LENGTH: Keep it under 60 words. Do NOT state the word count.\n" 
-        "5. TRUTH: You only know what is in the provided data. NEVER invent history, dates, or makers."
+        "5. TRUTH: You only know what is in the provided data. NEVER invent history, dates, or makers."        
     )
 
     user_prompt_furniture = (
@@ -213,7 +213,7 @@ def chat_with_furniture(user_input, furniture_title):
     # PROMPT 2: GENERATE USER OPTIONS (Spicy vs. History)
     # -------------------------------------------------------
     
-    print("DEBUG: Starting parallel threads...")
+    
     
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Start both tasks
@@ -222,12 +222,8 @@ def chat_with_furniture(user_input, furniture_title):
         
         # --- SAFE RETRIEVAL: AUDIO ---
         try:
-            # Wait max 10 seconds for audio, otherwise skip it
-            audio_base64 = future_audio.result(timeout=10)
-            if audio_base64:
-                print(f"DEBUG: Audio success! Size: {len(audio_base64)}")
-            else:
-                print("DEBUG: Audio thread finished but returned None (Check text_to_speech.py logs)")
+            # Wait max 15 seconds for audio, otherwise skip it
+            audio_base64 = future_audio.result(timeout=15)
         except Exception as e:
             print(f"CRITICAL ERROR in Audio Thread: {e}")
             audio_base64 = None # Fallback to no audio
@@ -236,9 +232,8 @@ def chat_with_furniture(user_input, furniture_title):
         try:
             # Wait max 5 seconds for options
             options_list = future_options.result(timeout=5)
-            print(f"DEBUG: Options success! Count: {len(options_list)}")
+            
         except Exception as e:
-            print(f"CRITICAL ERROR in Options Thread: {e}")
             # Fallback options so the UI doesn't break
             options_list = ["Tell me more.", "That is interesting.", "Goodbye."]
 
