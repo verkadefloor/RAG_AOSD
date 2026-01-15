@@ -215,7 +215,20 @@ async function askQuestion(questionText) {
       // 3. Add the furniture's response to chat
       addToChat("bot", data.answer);
 
-      // 4. UPDATE BUTTONS (The new logic)
+      // PLAY AUDIO ---
+      if (data.audio) {
+          try {
+              // Create an audio object from the Base64 string
+              // We assume WAV format, which is standard for Fish Speech
+              const audio = new Audio("data:audio/wav;base64," + data.audio);
+              audio.play();
+          } catch (e) {
+              console.error("Audio playback failed:", e);
+          }
+      }
+      // -----------------------
+
+      // 4. UPDATE BUTTONS
       // Check if the backend provided new options
       if (data.options && Array.isArray(data.options) && data.options.length > 0) {
           updateButtons(data.options);

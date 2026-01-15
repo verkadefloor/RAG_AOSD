@@ -1,8 +1,10 @@
 import json
 import re
 import os
+import concurrent.futures
 from dotenv import load_dotenv
 from openai import OpenAI
+from text_to_speech import speak
 
 # -------------------------
 # Configuration
@@ -101,6 +103,48 @@ def generate_with_retry(messages, response_format=None, max_retries=3, temperatu
     
     return None, "Failed to generate clean text."
 
+def generate_options_task(furniture_message, furniture_title):
+    """
+    Isolated function to run in a separate thread.
+    Generates the 3 user options based on the furniture's response.
+    """
+    
+    system_prompt_options = (
+        "You are a scriptwriter for a speed dating game, with a player and a piece of furniture.\n"
+        "1. ANALYZE the input message in the 'strategy' field. (Maximum 100 words)\n"
+        "2. WRITE 3 distinct lines for the PLAYER in the 'options' list.\n"
+        "Perspective: Do NOT write as the furniture. Write AS THE PLAYER."
+    )
+
+    # CHANGE: Simplified input. No complex context, just the trigger message.
+    user_prompt_options = (
+        f"{furniture_title} just said: \"{furniture_message}\"\n\n"
+        "TASK: Write 3 complete sentences, which the Player could respond to the furniture. Only output the response or question, don't state numbers or repeat the theme.\n"
+        "1. [Flirty]: Steer towards a more spicy date with this option.\n"
+        "2. [Curious]: Steer towards a conversation about history.\n"
+        "3. [Wildcard]: Write whatever you want.\n\n" \
+        "PERSPECTIVE RULES:\n"
+        "- Player = 'I'\n"
+        "- Furniture = 'You'\n"
+        "CONSTRAINTS:\n"
+        "- Use the 'strategy' field to think about the tone before writing.\n"
+        "- Keep options under 15 words.\n"
+        "- Do NOT state numbers or themes in the final text."
+    )
+
+    options_content, err = generate_with_retry(
+        messages=[
+            {"role": "system", "content": system_prompt_options},
+            {"role": "user", "content": user_prompt_options}
+        ],
+        response_format=OPTIONS_SCHEMA,
+        temperature=0.8 # Higher temp for creativity
+    )
+
+    if err or not options_content:
+        return []
+    
+    return json.loads(options_content).get("options", [])
 
 # -------------------------
 # Main Chat Logic
@@ -169,43 +213,38 @@ def chat_with_furniture(user_input, furniture_title):
     # PROMPT 2: GENERATE USER OPTIONS (Spicy vs. History)
     # -------------------------------------------------------
     
-    # CHANGE: The system prompt now explicitly forbids roleplaying the furniture.
-    system_prompt_options = (
-        "You are a scriptwriter for a speed dating game, with a player and a piece of furniture.\n"
-        "1. ANALYZE the input message in the 'strategy' field. (Maximum 100 words)\n"
-        "2. WRITE 3 distinct lines for the PLAYER in the 'options' list.\n"
-        "Perspective: Do NOT write as the furniture. Write AS THE PLAYER."
-    )
+    print("DEBUG: Starting parallel threads...")
+    
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Start both tasks
+        future_audio = executor.submit(speak, furniture_message)
+        future_options = executor.submit(generate_options_task, furniture_message, furniture_title)
+        
+        # --- SAFE RETRIEVAL: AUDIO ---
+        try:
+            # Wait max 10 seconds for audio, otherwise skip it
+            audio_base64 = future_audio.result(timeout=10)
+            if audio_base64:
+                print(f"DEBUG: Audio success! Size: {len(audio_base64)}")
+            else:
+                print("DEBUG: Audio thread finished but returned None (Check text_to_speech.py logs)")
+        except Exception as e:
+            print(f"CRITICAL ERROR in Audio Thread: {e}")
+            audio_base64 = None # Fallback to no audio
 
-    # CHANGE: Simplified input. No complex context, just the trigger message.
-    user_prompt_options = (
-        f"{furniture['title']} just said: \"{furniture_message}\"\n\n"
-        "TASK: Write 3 complete sentences, which the Player could respond to the furniture. Only output the response or question, don't state numbers or repeat the theme.\n"
-        "1. [Flirty]: Steer towards a more spicy date with this option.\n"
-        "2. [Curious]: Steer towards a conversation about history.\n"
-        "3. [Wildcard]: Write whatever you want.\n\n" \
-        "PERSPECTIVE RULES:\n"
-        "- Player = 'I'\n"
-        "- Furniture = 'You'\n"
-        "CONSTRAINTS:\n"
-        "- Use the 'strategy' field to think about the tone before writing.\n"
-        "- Keep options under 15 words.\n"
-        "- Do NOT state numbers or themes in the final text."
-    )
+        # --- SAFE RETRIEVAL: OPTIONS ---
+        try:
+            # Wait max 5 seconds for options
+            options_list = future_options.result(timeout=5)
+            print(f"DEBUG: Options success! Count: {len(options_list)}")
+        except Exception as e:
+            print(f"CRITICAL ERROR in Options Thread: {e}")
+            # Fallback options so the UI doesn't break
+            options_list = ["Tell me more.", "That is interesting.", "Goodbye."]
 
-    options_content, err = generate_with_retry(
-        messages=[
-            {"role": "system", "content": system_prompt_options},
-            {"role": "user", "content": user_prompt_options}
-        ],
-        response_format=OPTIONS_SCHEMA,
-        temperature=0.8 # Higher temp for creativity
-    )
-
-    options_list = json.loads(options_content).get("options", [])
-
-
+    # --- 3. Return Combined Result ---
     return {
         "message": furniture_message,
-        "options": options_list
+        "options": options_list,
+        "audio": audio_base64  # This is now the actual base64 string
     }

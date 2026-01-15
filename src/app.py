@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 import json
-
 from rag_model import chat_with_furniture  
-from text_to_speech import speak           
+      
 
 app = Flask(
     __name__,
@@ -60,14 +59,11 @@ def ask():
     if "error" in response_data:
         return jsonify({"error": response_data["error"]}), 500
 
-    # TTS Placeholder
-    audio_base64 = "" 
-
     # Return the structured data to the frontend
     return jsonify({
-        "answer": response_data.get("message", "I am speechless..."), # The character text
-        "options": response_data.get("options", []),                  # The suggested questions
-        "audio": audio_base64
+        "answer": response_data.get("message", "I am speechless..."), 
+        "options": response_data.get("options", []),
+        "audio": response_data.get("audio", "")  
     })
 
 @app.route("/end")
@@ -76,5 +72,4 @@ def end_page():
 
 # Run Flask
 if __name__ == "__main__":
-    # MPS for macbook
     app.run(host="0.0.0.0", port=8000, debug=True) 
