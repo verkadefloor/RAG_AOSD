@@ -1,42 +1,65 @@
-// configuration
-const TIME_LIMIT_SECONDS = 5 * 60; //duration date
-const MAX_ROUNDS = 3;              // max number of rounds
-const SWITCH_DELAY_MS = 3000;      // waighting time before next round
-const REVEAL_DELAY_MS = 1500;      // waiting time before revealing image
+/* =========================================
+   CONFIGURATION & GLOBALS
+   ========================================= */
+const TIME_LIMIT_SECONDS = 30; 
+const SWITCH_DELAY_MS = 3000;      
+const REVEAL_DELAY_MS = 1500;      
 
-// global variables
 let currentFurniture = null;
 let matches = [];
 let viewedTitles = [];
 let roundCounter = 0;
 let timerInterval = null;
 let revealTimeout = null;
+let maxRounds = 3;
+let timeLeft = 0;           
+let pendingAction = null;   
 
-// DOM elements
+// DOM Elements
 const furnitureNameEl = document.getElementById("furniture-name");
 const chatBox = document.getElementById("chat-box");
 const timerEl = document.getElementById("timer-display");
 const nextBtn = document.getElementById("next-btn");
 const backBtn = document.getElementById("back-btn");
+const furnitureUrlEl = document.getElementById("furniture-url");
+const dateCounterEl = document.getElementById("date-counter");
 
-// image elements
+// Image Elements
 const imgContainer = document.getElementById("image-stack-container");
 const imgNormalEl = document.getElementById("img-normal");
 const imgRevealedEl = document.getElementById("img-revealed");
 
-// question buttons
+// Question Buttons
 const btn0 = document.getElementById("q0");
 const btn1 = document.getElementById("q1");
 const btn2 = document.getElementById("q2");
 
-// standaard startvragen
+// Modal Elements
+const confirmModal = document.getElementById("confirmation-modal");
+const confirmTitle = document.getElementById("confirm-title");
+const confirmMsg = document.getElementById("confirm-message");
+const confirmYesBtn = document.getElementById("confirm-yes-btn");
+const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+const confirmCloseX = document.getElementById("close-confirm");
+
+const timesUpModal = document.getElementById("times-up-modal");
+const timesUpName = document.getElementById("times-up-name");
+const timesUpForm = document.getElementById("times-up-form");
+const timesUpEmail = document.getElementById("times-up-email");
+const timesUpSuccess = document.getElementById("times-up-success");
+const modalNextBtn = document.getElementById("modal-next-round-btn");
+
+// Start Questions
 const DEFAULT_QUESTIONS = [
-  "Tell me something about your origin and style.",
-  "What makes you unique compared to other pieces?",
-  "Have you ever experienced an interesting event?"
+    "I'd like to get to know you better. How would you describe your character?",
+    "You have a very distinct look. What materials are you made of?",
+    "You seem to be from a different time. When and where were you created?"
 ];
 
-// start application
+/* =========================================
+   INITIALIZATION & ROUND LOGIC
+   ========================================= */
+
 async function initChat() {
   try {
     const response = await fetch('/get_furniture_list'); 
@@ -45,21 +68,27 @@ async function initChat() {
     const data = await response.json();
 
     let selectedPeriod = localStorage.getItem("selectedPeriod");
-    let selectedType = localStorage.getItem("selectedType");
+    let roundsPref = localStorage.getItem("numberOfRounds");
     
     selectedPeriod = selectedPeriod ? selectedPeriod.toLowerCase().trim() : 'all';
-    selectedType = selectedType ? selectedType.toLowerCase().trim() : 'all';
+    maxRounds = roundsPref ? parseInt(roundsPref) : 3; 
 
-    matches = data.filter(item => {
+    // Find Matches
+    let strictMatches = data.filter(item => {
       const itemPeriod = (item.period || "").toLowerCase().trim();
-      const itemType = (item.type || "").toLowerCase().trim();
-      const periodMatch = (selectedPeriod === 'all' || itemPeriod === selectedPeriod);
-      const typeMatch = (selectedType === 'all' || itemType === selectedType);
-      return periodMatch && typeMatch;
+      return (selectedPeriod === 'all' || itemPeriod === selectedPeriod);
     });
 
-    if (matches.length === 0) {
-      matches = data; 
+    if (strictMatches.length >= maxRounds) {
+      matches = strictMatches.sort(() => 0.5 - Math.random()).slice(0, maxRounds);
+    } 
+    else {
+      const primaryCandidates = strictMatches.sort(() => 0.5 - Math.random());
+      const needed = maxRounds - primaryCandidates.length;
+      const primaryTitles = primaryCandidates.map(i => i.title);
+      const potentialFillers = data.filter(item => !primaryTitles.includes(item.title));
+      const fillers = potentialFillers.sort(() => 0.5 - Math.random()).slice(0, needed);
+      matches = [...primaryCandidates, ...fillers];
     }
 
     startNextRound();
@@ -70,14 +99,17 @@ async function initChat() {
   }
 }
 
-// start next round
 function startNextRound() {
-  if (roundCounter >= MAX_ROUNDS) { endSession(); return; }
-  const availableCandidates = matches.filter(item => !viewedTitles.includes(item.title));
-  if (availableCandidates.length === 0) { endSession(); return; }
+  if(timesUpModal) timesUpModal.classList.add('hidden');
 
-  const randomIndex = Math.floor(Math.random() * availableCandidates.length);
-  currentFurniture = availableCandidates[randomIndex];
+  if (roundCounter >= matches.length) { 
+      endSession(); 
+      return; 
+  }
+  currentFurniture = matches[roundCounter];
+  
+  if(!currentFurniture) { endSession(); return; }
+
   viewedTitles.push(currentFurniture.title);
   roundCounter++;
 
@@ -85,91 +117,157 @@ function startNextRound() {
   startTimer(TIME_LIMIT_SECONDS);
 }
 
-// Timer 
 function startTimer(duration) {
   if (timerInterval) clearInterval(timerInterval);
-  let timer = duration;
+  
+  if (duration !== undefined) {
+      timeLeft = duration;
+  }
+
   const updateDisplay = () => {
-    const minutes = Math.floor(timer / 60);
-    const seconds = timer % 60;
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
     timerEl.textContent = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
   };
+
   updateDisplay(); 
+
   timerInterval = setInterval(() => {
-    timer--;
+    timeLeft--;
     updateDisplay();
-    if (timer < 0) {
+    
+    if (timeLeft < 0) {
       clearInterval(timerInterval);
-      addToChat("bot", "<em>Time is up! Let's meet the next candidate...</em>");
-      setTimeout(startNextRound, 2000);
+      if (confirmModal) confirmModal.classList.add('hidden');
+      addToChat("bot", "<em>Time is up! The session has ended.</em>");
+      showTimesUpModal();
     }
   }, 1000);
 }
 
-// end session
+function stopTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+}
+
 function endSession() {
-  if (timerInterval) clearInterval(timerInterval);
+  stopTimer();
   window.location.href = "/end";
 }
 
 // UI Setup
 function setupUI() {
   if (revealTimeout) clearTimeout(revealTimeout);
-  
+
   imgRevealedEl.style.transition = 'none';
   imgContainer.classList.remove("show-reveal");
-  void imgRevealedEl.offsetHeight; 
-  imgRevealedEl.style.transition = '';
+  void imgRevealedEl.offsetHeight;
+  imgRevealedEl.style.transition = ''; 
 
   furnitureNameEl.textContent = currentFurniture.title;
-  imgNormalEl.src = currentFurniture.image; 
+  if(dateCounterEl) dateCounterEl.textContent = `Date ${roundCounter} / ${matches.length}`;
+  
+  furnitureUrlEl.href = currentFurniture.url || "https://www.rijksmuseum.nl/en";
+  furnitureUrlEl.textContent = "View on Collection Page";
+
+  imgNormalEl.src = currentFurniture.image;
   imgRevealedEl.src = currentFurniture.image_after;
   imgNormalEl.onerror = () => { imgNormalEl.src = "images/fallback.png"; };
 
   chatBox.innerHTML = ""; 
-  addToChat("bot", `Hello! I am candidate #${roundCounter}: ${currentFurniture.title}. You have 5 minutes.`);
+  addToChat("bot", `Hello! I am candidate ${roundCounter}. Let's get to know each other!`);
   
   updateButtons(DEFAULT_QUESTIONS);
+  setButtonsState(true); 
+
+  revealTimeout = setTimeout(() => {
+      if(imgContainer) imgContainer.classList.add("show-reveal");
+  }, REVEAL_DELAY_MS);
 
   if (nextBtn) {
     nextBtn.disabled = false;
-    nextBtn.textContent = "Next Date ➔";
+    nextBtn.textContent = "Next Speeddate";
     nextBtn.style.cursor = "pointer";
   }
-
-  revealTimeout = setTimeout(() => {
-      imgContainer.classList.add("show-reveal");
-  }, REVEAL_DELAY_MS);
 }
+
+/* =========================================
+   CHAT & INTERACTION LOGIC
+   ========================================= */
 
 function updateButtons(questionsArray) {
-  if (questionsArray.length > 0) btn0.textContent = questionsArray[0];
-  if (questionsArray.length > 1) btn1.textContent = questionsArray[1];
-  if (questionsArray.length > 2) btn2.textContent = questionsArray[2];
+  const buttons = [btn0, btn1, btn2];
+  buttons.forEach((btn, index) => {
+    if (btn && questionsArray[index]) {
+      btn.textContent = questionsArray[index];
+    }
+  });
 }
 
-// chat functions
+function setButtonsState(isEnabled) {
+  const buttons = [btn0, btn1, btn2];
+  buttons.forEach(btn => {
+    if(btn) btn.disabled = !isEnabled;
+  });
+}
+
 function addToChat(sender, text) {
   const div = document.createElement("div");
-  div.className = "chat-message " + sender;
+  div.className = `chat-message ${sender}`;
+  
   let name = "You";
   if (sender === "bot") {
-      if (text.startsWith("<em>")) name = "System";
-      else name = currentFurniture ? currentFurniture.title : "Furniture";
+      name = text.startsWith("<em>") ? "System" : (currentFurniture?.title || "Furniture");
   }
+
   div.innerHTML = `<strong>${name}:</strong> <span>${text}</span>`;
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// error connection message
+async function askQuestion(questionText) {
+  if (!currentFurniture) return;
+  
+  addToChat("user", questionText);
+  setButtonsState(false);
+
+  try {
+    const res = await fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        furniture: currentFurniture.title, 
+        question: questionText,
+        context: currentFurniture.description 
+      })
+    });
+    
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+    const data = await res.json();
+
+    if (data.error) {
+      addToChat("bot", `Error: ${data.error}`);
+    } else {
+      addToChat("bot", data.answer);
+      if (Array.isArray(data.options) && data.options.length > 0) {
+          updateButtons(data.options);
+      }
+    }
+
+  } catch (err) {
+    console.error("Interaction failed:", err);
+    showConnectionError();
+  } finally {
+    setButtonsState(true);
+  }
+}
+
 function showConnectionError() {
   const div = document.createElement("div");
   div.className = "chat-message bot connection-error";
-
-  const title = currentFurniture ? currentFurniture.title : "The Spirit World";
-
-  const imgSrc = currentFurniture ? currentFurniture.image : "images/fallback.png";
+  
+  const title = currentFurniture?.title || "The Spirit World";
+  const imgSrc = currentFurniture?.image || "images/fallback.png";
 
   div.innerHTML = `
     <strong>${title}:</strong>
@@ -183,80 +281,231 @@ function showConnectionError() {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-async function askQuestion(questionText) {
-  if (!currentFurniture) return;
-  
-  // 1. Add user's question to chat
-  addToChat("user", questionText);
-
-  // 2. Disable buttons while thinking
-  btn0.disabled = true; btn1.disabled = true; btn2.disabled = true;
-
-  try {
-    const res = await fetch("/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        furniture: currentFurniture.title, 
-        question: questionText,
-        context: currentFurniture.description 
-      })
-    });
-    
-    if (!res.ok) {
-        throw new Error("Server responded with " + res.status);
-    }
-
-    const data = await res.json();
-
-    if (data.error) {
-      addToChat("bot", "Error: " + data.error);
-    } else {
-      // 3. Add the furniture's response to chat
-      addToChat("bot", data.answer);
-
-      // 4. UPDATE BUTTONS (The new logic)
-      // Check if the backend provided new options
-      if (data.options && Array.isArray(data.options) && data.options.length > 0) {
-          updateButtons(data.options);
-      }
-    }
-
-  } catch (err) {
-    console.error("Connection lost:", err);
-    showConnectionError();
-    
-  } finally {
-    // 5. Re-enable buttons
-    btn0.disabled = false; btn1.disabled = false; btn2.disabled = false;
-  }
-}
-
-// event Listeners 
+// Listeners
 btn0.onclick = function() { askQuestion(this.textContent); };
 btn1.onclick = function() { askQuestion(this.textContent); };
 btn2.onclick = function() { askQuestion(this.textContent); };
 
-if (nextBtn) {
-  nextBtn.onclick = () => {
-    nextBtn.disabled = true;
-    nextBtn.textContent = "Looking for matches...";
-    nextBtn.style.cursor = "wait";
-    addToChat("user", "<em>I don't think this is a match. Next please!</em>");
-    if (timerInterval) clearInterval(timerInterval);
-    if (revealTimeout) clearTimeout(revealTimeout);
-    setTimeout(() => {
-      startNextRound();
-    }, SWITCH_DELAY_MS);
-  };
+/* =========================================
+   CONFIRMATION MODAL LOGIC
+   ========================================= */
+
+function requestConfirmation(action) {
+    pendingAction = action; 
+    
+    if (action === 'exit') {
+        confirmTitle.textContent = "Exit Experience?";
+        confirmMsg.textContent = "You will lose your progress and return to the home screen.";
+        confirmYesBtn.textContent = "Yes, Exit";
+        confirmYesBtn.style.backgroundColor = "#b5291ca6"; 
+    } else if (action === 'next') {
+        confirmTitle.textContent = "Skip Date?";
+        confirmMsg.textContent = "Are you sure you want to end this date early?";
+        confirmYesBtn.textContent = "Yes, Next Date";
+        confirmYesBtn.style.backgroundColor = "#7da076"; 
+    }
+
+    confirmModal.classList.remove('hidden');
 }
 
-if (backBtn) {
-  backBtn.onclick = () => {
-    if (timerInterval) clearInterval(timerInterval);
-    if (revealTimeout) clearTimeout(revealTimeout);
-    window.location.href = "/";
-  };
+function closeConfirmation() {
+    confirmModal.classList.add('hidden');
+    pendingAction = null;
 }
 
+function confirmAction() {
+    confirmModal.classList.add('hidden');
+    
+    if (pendingAction === 'exit') {
+        stopTimer();
+        window.location.href = "/";
+    } 
+    else if (pendingAction === 'next') {
+        if (nextBtn) {
+            nextBtn.disabled = true;
+            nextBtn.textContent = "Looking for matches...";
+            nextBtn.style.cursor = "wait";
+            addToChat("user", "<em>I don't think this is a match. Next please!</em>");
+            
+            stopTimer(); 
+            if (revealTimeout) clearTimeout(revealTimeout);
+            
+            setTimeout(() => {
+                startNextRound();
+            }, SWITCH_DELAY_MS);
+        }
+    }
+}
+
+if (confirmYesBtn) confirmYesBtn.addEventListener('click', confirmAction);
+if (confirmCancelBtn) confirmCancelBtn.addEventListener('click', closeConfirmation);
+if (confirmCloseX) confirmCloseX.addEventListener('click', closeConfirmation);
+
+if (confirmModal) {
+    confirmModal.addEventListener('click', (e) => {
+        if (e.target === confirmModal) closeConfirmation();
+    });
+}
+
+if (nextBtn) nextBtn.onclick = () => requestConfirmation('next');
+if (backBtn) backBtn.onclick = () => requestConfirmation('exit');
+
+/* =========================================
+   TIME'S UP MODAL LOGIC
+   ========================================= */
+
+function showTimesUpModal() {
+    if (!timesUpModal) return;
+
+    if(timesUpForm) timesUpForm.style.display = 'flex';
+    if(timesUpSuccess) timesUpSuccess.classList.add('hidden');
+    if(timesUpEmail) timesUpEmail.value = '';
+
+    if(timesUpName) timesUpName.textContent = currentFurniture ? currentFurniture.title : "this piece";
+
+    timesUpModal.classList.remove('hidden');
+}
+
+if (timesUpForm) {
+    timesUpForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = timesUpEmail.value;
+        const furnitureTitle = currentFurniture ? currentFurniture.title : "Unknown";
+
+        console.log(`Email captured for ${furnitureTitle}: ${email}`);
+
+        timesUpForm.style.display = 'none';
+        timesUpSuccess.classList.remove('hidden');
+    });
+}
+
+if (modalNextBtn) {
+    modalNextBtn.onclick = () => {
+        timesUpModal.classList.add('hidden');
+        startNextRound();
+    };
+}
+
+/* =========================================
+   SETTINGS MODAL LOGIC
+   ========================================= */
+
+const settingsBtn = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal');
+const closeSettingsBtn = document.getElementById('close-settings');
+const saveSettingsBtn = document.getElementById('save-settings');
+const modalPeriod = document.getElementById('modal-period');
+const modalRounds = document.getElementById('modal-rounds');
+
+function toggleSettings() {
+    if (!settingsModal) return;
+    const isHidden = settingsModal.classList.contains('hidden');
+    
+    if (isHidden) {
+        if (timerInterval) clearInterval(timerInterval); 
+        
+        const currentPeriod = localStorage.getItem('selectedPeriod') || 'all';
+        const currentRounds = localStorage.getItem('numberOfRounds') || '3';
+        if(modalPeriod) modalPeriod.value = currentPeriod;
+        if(modalRounds) modalRounds.value = currentRounds;
+        settingsModal.classList.remove('hidden');
+    } else {
+        settingsModal.classList.add('hidden');
+        startTimer(); 
+    }
+}
+
+function saveAndRestart() {
+    if(modalPeriod) localStorage.setItem('selectedPeriod', modalPeriod.value);
+    if(modalRounds) localStorage.setItem('numberOfRounds', modalRounds.value);
+    toggleSettings();
+    window.location.reload(); 
+}
+
+if (settingsBtn) settingsBtn.addEventListener('click', toggleSettings);
+if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', toggleSettings);
+if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveAndRestart);
+
+if (settingsModal) {
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) toggleSettings();
+    });
+}
+
+const imageStackContainer = document.getElementById('image-stack-container');
+if (imageStackContainer) {
+    imageStackContainer.addEventListener('click', function() {
+        this.classList.toggle('show-reveal');
+    });
+}
+/* =========================================
+   HISTORICAL CONTEXT MODAL LOGIC
+   ========================================= */
+
+const contextModal = document.getElementById('context-modal');
+const warningBtn = document.querySelector('.corner-warning-btn');
+const closeContextX = document.getElementById('close-context-x');
+const closeContextBtn = document.getElementById('close-context-btn');
+
+if (warningBtn) {
+    warningBtn.addEventListener('click', () => {
+        if (contextModal) contextModal.classList.remove('hidden');
+    });
+}
+
+function closeContext() {
+    if (contextModal) contextModal.classList.add('hidden');
+}
+
+if (closeContextX) closeContextX.addEventListener('click', closeContext);
+if (closeContextBtn) closeContextBtn.addEventListener('click', closeContext);
+
+if (contextModal) {
+    contextModal.addEventListener('click', (e) => {
+        if (e.target === contextModal) closeContext();
+    });
+}
+
+/* ======================
+   BACKGROUND MUSIC LOGIC
+   ====================== */
+const musicBtn = document.getElementById('music-btn');
+const bgMusic = document.getElementById('bg-music');
+
+if (musicBtn && bgMusic) {
+    const icon = musicBtn.querySelector('span');
+    
+    // Set volume 
+    bgMusic.volume = 0.3; 
+    const playPromise = bgMusic.play();
+
+    if (playPromise !== undefined) {
+        playPromise.then(() => {
+            icon.textContent = 'music_note';
+        }).catch(error => {
+            // If autoplay was blocked by the browser, set the icon to 'off' and wait for the first user interaction.
+            console.log("Autoplay prevented. Waiting for user interaction.");
+            icon.textContent = 'music_off';
+            
+            document.addEventListener('click', function enableAudio() {
+                bgMusic.play();
+                icon.textContent = 'music_note';
+                document.removeEventListener('click', enableAudio);
+            }, { once: true });
+        });
+    }
+    musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+
+        if (bgMusic.paused) {
+            bgMusic.play();
+            icon.textContent = 'music_note'; // Note icon = Playing
+        } else {
+            bgMusic.pause();
+            icon.textContent = 'music_off';  // Crossed icon = Muted
+        }
+    });
+}
+// Start
 initChat();
