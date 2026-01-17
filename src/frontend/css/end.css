@@ -2,13 +2,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh; /* Zorgt dat hij mooi in het midden staat */
+  min-height: 80vh; 
   padding: 2rem;
 }
 
 .end-card {
-  background-color: #fff;
-  color: #333;
+  background-color: #f8f5f2;
+  color: #6b5b4e;
   max-width: 600px;
   padding: 3rem;
   border-radius: 12px;
@@ -19,12 +19,12 @@
 .end-card h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: #40474F; /* Je huisstijl donkergrijs */
+  color: #6b5b4e; 
 }
 
 .subtitle {
   font-size: 1.2rem;
-  color: #888;
+  color: #6b5b4e;
   margin-bottom: 2rem;
   font-weight: 600;
 }
@@ -35,10 +35,10 @@
   margin-bottom: 2.5rem;
 }
 
-/* De knop naar het museum */
+/* Museum Button */
 .museum-btn {
   display: inline-block;
-  background-color: #d9534f; /* Een opvallende kleur (of gebruik #40474F) */
+  background-color: #b5291ca6; 
   color: white;
   padding: 15px 30px;
   border-radius: 30px;
@@ -55,7 +55,7 @@
   color: white;
 }
 
-/* Linkje voor opnieuw proberen */
+/* Retry Link */
 .retry-link {
   display: block;
   margin-top: 1rem;
@@ -66,4 +66,81 @@
 
 .retry-link:hover {
   color: #333;
+}
+
+/* --- Email Signup Section --- */
+.email-signup-container {
+    margin: 25px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    min-height: 60px; 
+}
+
+.notify-form {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.notify-form input[type="email"] {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.notify-form input[type="email"]:focus {
+    border-color: #7da076; 
+}
+
+.submit-btn {
+    background-color: #5d4037; 
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.submit-btn:hover {
+    background-color: #b5291ca6; 
+}
+
+/* --- Success Message --- */
+.success-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2e7d32; 
+    font-weight: 600;
+    animation: fadeIn 0.5s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 500px) {
+    .notify-form {
+        flex-direction: column;
+    }
+    .submit-btn {
+        padding: 12px;
+        width: 100%;
+    }
 }

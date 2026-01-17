@@ -8,11 +8,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "Someone who wants everything to be perfect and demands the highest standards possible. And wants to be like other clocks.",
     "image": "https://iiif.micr.io/NETCA/full/%5E640,/0/default.webp",
-    "image_after": "images/cartelclock_after.jpg",
+    "image_after": "images/cartelclock_after.png",
     "objectNumber": "BK-1959-88",
     "maker": "Jacques Caffieri, Julien Le Roy, Antoine-Nicolas Martinière",
     "dimensions": "h 64.5cm × w 33cm × d 11cm",
-    "acquired": "Purchased 1959"
+    "acquired": "Purchased 1959",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Cartel-clock--156e2a514705a5a8ba3d1ee3aaaba26a?tab=data"
   },
   {
     "title": "Gaming table",
@@ -23,11 +24,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "intended to be funny, happy, or enjoyable, rather than serious, done as a form of play rather than intended seriously, or wanting to have a good time and not feeling serious, pleasant or pleasing",
     "image": "https://iiif.micr.io/tczoU/full/%5E640,/0/default.webp",
-    "image_after": "images/gamingtable_after.jpg",
+    "image_after": "images/gamingtable_after.png",
     "objectNumber": "BK-KOG-717",
     "maker": "Anonymous (Northern Netherlands)",
     "dimensions": "h 77cm × w 89.5cm × d 89.5cm",
-    "acquired": "On loan"
+    "acquired": "On loan",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Speeltafel-met-achthoekig-blad-bekleed-met-borduurwerk-in-gros-en-petit-point--45c564572dc97d4e408eb450612e63ab?tab=data"
   },
   {
     "title": "Mantle Clock",
@@ -38,11 +40,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "Someone who wants everything to be perfect and demands the highest standards possible. And wants to be like other clocks.",
     "image": "https://iiif.micr.io/wQjMw/0,0,4882,6359/%5E640,/0/default.webp",
-    "image_after": "images/mantleclock_after.jpg",
+    "image_after": "images/mantleclock_after.png",
     "objectNumber": "BK-1997-16",
     "maker": "Anonymous (Paris)",
     "dimensions": "h 68cm × w 43.4cm × d 21cm",
-    "acquired": "Purchased 1997"
+    "acquired": "Purchased 1997",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Mantle-clock-pendule--e8fa084aa077621c74089f9f13ee8c05?tab=data"
   },
   {
     "title": "Oak Cabinet",
@@ -53,11 +56,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "Someone organized is able to plan things carefully and keep things, Peaceful, calm and without worry, nervous and uncomfortable with other people, showing intelligence, or able to learn and understand things easily",
     "image": "https://iiif.micr.io/vXkFL/full/%5E640,/0/default.webp",
-    "image_after": "images/oakcabinet_after.jpg",
+    "image_after": "images/oakcabinet_after.png",
     "objectNumber": "BK-1989-16",
     "maker": "Anonymous (Amsterdam)",
     "dimensions": "h 243.7cm × w 198.5cm × d 70.5cm",
-    "acquired": "Purchased 1989"
+    "acquired": "Purchased 1989",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Cabinet--7c0cbb5bee57f4f830fd4e81eaba80d5?tab=data"
   },
   {
     "title": "Rosewood chair",
@@ -68,11 +72,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "fearing that someone you love loves someone else or is loved by someone else, showing agreement and giving encouragement, liking to take control in a group and having natural authority",
     "image": "https://iiif.micr.io/CQWxp/full/%5E640,/0/default.webp",
-    "image_after": "images/rosewoodchair_after.jpg",
+    "image_after": "images/rosewoodchair_after.png",
     "objectNumber": "BK-1970-7",
     "maker": "Anonymous (Utrecht), after Désiré Guilmard",
     "dimensions": "h 156cm × w 57cm × d 57cm",
-    "acquired": "Purchased 1970"
+    "acquired": "Purchased 1970",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Chair--26e23e6c54850a98dae5267acac32916?tab=data"
   },
   {
     "title": "Chest of painted poplar wood",
@@ -83,11 +88,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "wanting to protect someone from criticism, hurt, danger, etc. because you like them very much, willing to try new, unusual, and exciting things, Someone who is secretive and hides their feelings, thoughts, intentions, and actions from others",
     "image": "https://iiif.micr.io/pmDmO/full/%5E640,/0/default.webp",
-    "image_after": "images/poplarwoodchest_after.jpg",
+    "image_after": "images/poplarwoodchest_after.png",
     "objectNumber": "BK-16627",
     "maker": "Anonymous (Italy, Florence)",
     "dimensions": "h 56cm × w 156cm × d 49cm",
-    "acquired": "Unknown"
+    "acquired": "Unknown",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Chest--7af85d33e203b37c4fabd7a2aef3074c?tab=data"
   },
   {
     "title": "Decorated Painter's Box",
@@ -98,11 +104,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "wanting to protect someone from criticism, hurt, danger, etc. because you like them very much, willing to try new, unusual, and exciting things, Someone who is secretive and hides their feelings, thoughts, intentions, and actions from others",
     "image": "https://iiif.micr.io/GNOkA/full/%5E640,/0/default.webp",
-    "image_after": "images/painterschest_after.jpg",
+    "image_after": "images/painterschest_after.png",
     "objectNumber": "BK-15234",
     "maker": "Attributed to Anthonie Jansz. van der Croos, Jan Martszen de Jonge",
     "dimensions": "h 44cm × w 36cm × d 23.7cm",
-    "acquired": "Gift 1938"
+    "acquired": "Gift 1938",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Decorated-Painters-Box--9b956ec0c1ca6100ec4d845a4ee72258?tab=data"
   },
   {
     "title": "Chair with diagonally placed front legs",
@@ -113,11 +120,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "fearing that someone you love loves someone else or is loved by someone else, showing agreement and giving encouragement, liking to take control in a group and having natural authority",
     "image": "https://iiif.micr.io/zXgyI/full/%5E640,/0/default.webp",
-    "image_after": "images/diagonalchair_after.jpg",
+    "image_after": "images/diagonalchair_after.png",
     "objectNumber": "BK-NM-4141",
     "maker": "Anonymous (Northern Netherlands)",
     "dimensions": "h 130.5cm × w 56cm × d 59.5cm",
-    "acquired": "Purchased 1877"
+    "acquired": "Purchased 1877",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Stoel-met-overhoeks-geplaatste-voorpoten-X-vormig-kruis-bekleed-met-trijp-met-bloemenpatroon--9436008eae67cd8fabf461ce4b3674b9?tab=data"
   },
   {
     "title": "Tortoiseshell Cabinet",
@@ -128,11 +136,13 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "Someone organized is able to plan things carefully and keep things, Peaceful, calm and without worry, nervous and uncomfortable with other people, showing intelligence, or able to learn and understand things easily",
     "image": "https://iiif.micr.io/czatW/0,0,4889,6726/%5E640,/0/default.webp",
-    "image_after": "images/tortoiseshellcabinet_after.jpg",
+    "image_after": "images/tortoiseshellcabinet_after.png",
     "objectNumber": "BK-1996-22",
     "maker": "Attributed to Pierre Gole (Paris)",
     "dimensions": "h 128.5cm × w 84.5cm × d 35cm",
-    "acquired": "Purchased 1996"
+    "acquired": "Purchased 1996",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Cabinet--c23ce6b5e7f2a970d2455f36ccd6648f?tab=data"
+
   },
   {
     "title": "Sideboard",
@@ -143,11 +153,12 @@
     "location": "Rijksmuseum, Amsterdam",
     "character": "Someone organized is able to plan things carefully and keep things, Peaceful, calm and without worry, nervous and uncomfortable with other people, showing intelligence, or able to learn and understand things easily",
     "image": "https://iiif.micr.io/cTnaP/full/%5E640,/0/default.webp",
-    "image_after": "images/sideboard_after.jpg",
+    "image_after": "images/sideboard_after.png",
     "objectNumber": "BK-1977-25",
     "maker": "Carel Adolph Lion Cachet, Kunsthandel E.J. van Wisselingh",
     "dimensions": "h 285cm × w 306cm × d 79cm",
-    "acquired": "Purchased 1977"
+    "acquired": "Purchased 1977",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Sideboard--cb0ed5326732a5c3167eee46ee9f8557?tab=data"
   },
   {
     "title": "Dolls’ house of Petronella Oortman",
@@ -162,7 +173,8 @@
     "objectNumber": "BK-NM-1010",
     "maker": "Anonymous (Amsterdam)",
     "dimensions": "h 255cm × w 190cm × d 78cm",
-    "acquired": "Unknown"
+    "acquired": "Unknown",
+    "url": "https://www.rijksmuseum.nl/en/collection/object/Dolls-house-of-Petronella-Oortman--62700ab4ff22218345de76f77d58ad39"
   }  
 
 ]

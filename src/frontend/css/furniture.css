@@ -1,13 +1,12 @@
-
+/* --- Filter Panel --- */
 .filter-panel {
-  background-color: #40474F; 
+  background-color: #f8f5f2; 
   padding: 3rem;
   margin: 3rem auto;
   max-width: 700px;
   border-radius: 12px; 
   box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
 }
-
 
 .filter-row {
   display: flex;
@@ -17,9 +16,8 @@
   margin-bottom: 2rem;
 }
 
-
 .filter-row label {
-  color: #c2ccce; 
+  color: #6b5b4e; 
   font-size: 1.1rem;
   text-align: left;
   flex: 1;
@@ -28,14 +26,13 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-
 .filter-row select {
   flex: 1;
   padding: 14px 20px;
   font-size: 1rem;
   border: none;
   border-radius: 8px; 
-  background-color: #f5f1ec; 
+  background-color: #fff; 
   color: #333;
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
@@ -51,16 +48,14 @@
   outline: 2px solid #888;
 }
 
-
+/* --- Start Button --- */
 .start-button {
   display: block;
   margin: 2.5rem auto 0;
   padding: 16px 50px;
   font-size: 1.1rem;
-  
   background-color: #ffffff; 
-  color: #40474F; 
-  
+  color: #6b5b4e; 
   text-decoration: none;
   border: none;
   font-weight: 700;
@@ -68,7 +63,6 @@
   letter-spacing: 1px;
   text-align: center;
   width: fit-content;
-  
   border-radius: 30px; 
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   transition: all 0.3s ease;
@@ -81,6 +75,7 @@
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
+/* --- Mobile Responsiveness --- */
 @media (max-width: 768px) {
   .filter-row {
     flex-direction: column;

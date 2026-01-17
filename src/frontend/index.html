@@ -7,7 +7,8 @@
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/navbar.css">
-  <link rel="stylesheet" href="css/furniture.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="css/furniture.css"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -26,49 +27,100 @@
       <label for="period">Choose your preferred time period</label>
       <select id="period" name="period">
         <option value="all">Select period</option>
-        <option value="15th">15th century</option>
-        <option value="17th">17th century</option>
-        <option value="18th">18th century</option>
-        <option value="19th">19th century</option>
-        <option value="20th">20th century</option>
+        <option value="15th century">15th century</option>
+        <option value="17th century">17th century</option>
+        <option value="18th century">18th century</option>
+        <option value="19th century">19th century</option>
+        <option value="20th century">20th century</option>
         <option value="all">All</option>
       </select>
     </div>
 
     <div class="filter-row">
-      <label for="type">Choose your preferred furniture type</label>
-      <select id="type" name="type">
-        <option value="all">Select furniture</option>
-        <option value="cabinet">Cabinet</option>
-        <option value="clock">Clock</option>
-        <option value="chair">Chair</option>
-        <option value="toy">Toy</option>
-        <option value="chest">Chest</option>
-        <option value="all">All</option>
+      <label for="rounds">How many dates are you up for?</label>
+      <select id="rounds" name="rounds">
+        <option value="1">1 Date</option>
+        <option value="2">2 Dates</option>
+        <option value="3" selected>3 Dates</option>
+        <option value="4">4 Dates</option>
+        <option value="5">5 Dates</option>
       </select>
     </div>
 
-    <a href="chat.html" class="start-button" id="startBtn">Start speeddating</a>
+    <p id="match-feedback" style="margin-bottom: 2rem; color: #ddd; font-style: italic; min-height: 1.2em;">
+      </p>
+
+    <a href="#" class="start-button" id="startBtn">Start speeddating</a>
   </div>
 
-</div>
+  <script>
+    // Global Data
+    let allFurniture = [];
 
-<script>
-  document.getElementById('startBtn').addEventListener('click', function(e) {
-    e.preventDefault(); 
-    
-    const period = document.getElementById('period').value;
-    const type = document.getElementById('type').value;
+    // 1. Fetch data
+    fetch('/get_furniture_list')
+      .then(response => response.json())
+      .then(data => {
+        allFurniture = data;
+        updateFeedback();
+      })
+      .catch(err => console.error("Error loading data:", err));
 
-    localStorage.setItem('selectedPeriod', period);
-    localStorage.setItem('selectedType', type);
-    
+    const periodSelect = document.getElementById('period');
+    const roundsSelect = document.getElementById('rounds');
+    const feedbackEl = document.getElementById('match-feedback');
+    const startBtn = document.getElementById('startBtn');
 
-    window.location.href = "/chat"; 
-  });
-</script>
+    // 2. Update feedback text
+    function updateFeedback() {
+      if (allFurniture.length === 0) return;
+
+      const selectedPeriod = periodSelect.value;
+      const desiredRounds = parseInt(roundsSelect.value);
+
+      const strictMatches = allFurniture.filter(item => {
+        if (selectedPeriod === 'all') return true;
+        return (item.period || "").toLowerCase().trim() === selectedPeriod;
+      });
+
+      const count = strictMatches.length;
+
+      if (selectedPeriod === 'all') {
+        feedbackEl.textContent = `You will meet ${desiredRounds} random candidates from our collection.`;
+        feedbackEl.style.color = "#6b5b4e";
+      } 
+      else if (count >= desiredRounds) {
+        feedbackEl.textContent = `Excellent! We found ${count} candidates from the ${selectedPeriod}. You will meet ${desiredRounds} of them.`;
+        feedbackEl.style.color = "#4CAF50"; 
+      } 
+      else if (count > 0) {
+        const needed = desiredRounds - count;
+        feedbackEl.innerHTML = `We found <strong>${count}</strong> matches from the ${selectedPeriod}.<br>To reach ${desiredRounds} dates, we will add <strong>${needed}</strong> mystery guests!`;
+        feedbackEl.style.color = "#FFC107"; 
+      } 
+      else {
+        feedbackEl.textContent = `Alas! No candidates found from the ${selectedPeriod}. We will find you ${desiredRounds} random dates instead.`;
+        feedbackEl.style.color = "#FF5722"; 
+      }
+    }
+
+    // 3. Event Listeners
+    periodSelect.addEventListener('change', updateFeedback);
+    roundsSelect.addEventListener('change', updateFeedback);
+
+    // 4. Start Session
+    startBtn.addEventListener('click', function(e) {
+      e.preventDefault(); 
+      
+      localStorage.setItem('selectedPeriod', periodSelect.value);
+      localStorage.setItem('numberOfRounds', roundsSelect.value); 
+
+      window.location.href = "/chat"; 
+    });
+  </script>
 
 </body>
+
 <div class="privacy-banner" id="privacyBanner" style="display: none;">
   <div class="privacy-banner__inner">
     <div class="privacy-banner__copy">

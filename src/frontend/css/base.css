@@ -35,7 +35,6 @@ img {
   display: block;
 }
 
-
 .container {
   max-width: 1200px;
   margin: 4rem auto 2rem; 
@@ -45,6 +44,7 @@ img {
   text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
 }
 
+/* --- Background Styles --- */
 
 body.homepage {
   background-image: url('../images/background_home.webp'); 
@@ -54,30 +54,79 @@ body.homepage {
   min-height: 100vh;            
 }
 
+/* Blurred background layer */
+body.homepage::before {
+    content: "";
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/background_home.webp'); 
+    background-size: cover;      
+    background-position: center; 
+    background-repeat: no-repeat;
+    filter: blur(8px) brightness(0.9); 
+    transform: scale(1.1); 
+    z-index: -1;
+}
+
 body.speeddate {
-  background-color:#40474F;; 
-  background-size: cover;      
-  background-position: center; 
-  background-repeat: no-repeat; 
-  min-height: 100vh;            
+    background-color: #f8f5f2; 
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+     
+}
+body.speeddate::before {
+    content: "";
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/background_home.webp'); 
+    background-size: cover;      
+    background-position: center; 
+    background-repeat: no-repeat;
+    filter: blur(8px) brightness(0.9); 
+    transform: scale(1.1); 
+    z-index: -1;
 }
 
 body.end {
-  background-image: url('../images/background_end.webp'); 
-  background-size: cover;      
-  background-position: center; 
-  background-repeat: no-repeat; 
-  min-height: 100vh;            
+    background-color: #f8f5f2; 
+    min-height: 100vh;
+    margin: 0;
+    position: relative; 
+}
+body.end::before {
+    content: "";
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/background_home.webp'); 
+    background-size: cover;      
+    background-position: center; 
+    background-repeat: no-repeat;
+    filter: blur(8px) brightness(0.9); 
+    transform: scale(1.1); 
+    z-index: -1;
 }
 
-
+/* --- Privacy Banner --- */
 .privacy-banner {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   background-color: #ffffff;
-  border-top: 4px solid #40474F; 
+  border-top: 4px solid #6b5b4e; 
   box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
   z-index: 1000; 
   padding: 1.5rem 0;
@@ -98,13 +147,13 @@ body.end {
 .privacy-banner__header {
   font-weight: 700;
   font-size: 1.1rem;
-  color: #40474F;
+  color: #6b5b4e;
   margin-bottom: 0.5rem;
 }
 
 .privacy-banner__description {
   font-size: 0.9rem;
-  color: #555;
+  color: #6b5b4e;
   line-height: 1.5;
   max-width: 800px;
 }
@@ -114,7 +163,7 @@ body.end {
 }
 
 .privacy-button {
-  background-color: #40474F;
+  background-color: #6b5b4e;
   color: white;
   border: none;
   padding: 10px 25px;

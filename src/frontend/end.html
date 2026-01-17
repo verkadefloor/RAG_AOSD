@@ -17,22 +17,48 @@
 
 <div class="end-container">
   <div class="end-card">
-    <h1>Thank you for speeddating!</h1>
-    <p class="subtitle">The session has ended.</p>
-    
-    <div class="content-text">
-      <p>Did you find a spark with one of our historical pieces?</p>
-      <p>If your match was among them (or if you are still looking), come admire them in real life.</p>
-    </div>
-
-    <div class="button-group">
-      <a href="https://www.rijksmuseum.nl/en/visit" target="_blank" class="museum-btn">
-        Visit the Museum
-      </a>
+      <h1>Thank you for speeddating!</h1>
+      <p class="subtitle">The session has ended.</p>
       
-      <a href="/" class="retry-link">Start another session</a>
-    </div>
+      <!-- <div class="content-text">
+          <p>Did you find a spark with one of our historical pieces?</p>
+          <p>Leave your email below to get notified when your matches are on display.</p>
+      </div>
+
+      <div class="email-signup-container" id="signup-container">
+          
+          <form id="notify-form" class="notify-form">
+              <input type="email" id="user-email" placeholder="Enter your email address" required>
+              <button type="submit" class="submit-btn">Keep in Touch</button>
+          </form>
+
+          <div id="success-message" class="success-message hidden">
+              <span>Saved! We will notify you.</span>
+          </div>
+          
+      </div> -->
+
+      <div class="button-group">
+          <a href="https://www.rijksmuseum.nl/en/visit" target="_blank" class="museum-btn">
+              Visit the Museum
+          </a>
+          
+          <a href="/" class="retry-link">Start another session</a>
+      </div>
   </div>
+<!-- 
+  <script>
+      document.getElementById('notify-form').addEventListener('submit', function(e) {
+          e.preventDefault(); 
+          
+          const email = document.getElementById('user-email').value;
+          const form = document.getElementById('notify-form');
+          const successMsg = document.getElementById('success-message');
+          
+          form.style.display = 'none';
+          successMsg.classList.remove('hidden');
+      });
+  </script> -->
 </div>
 
 </body>
