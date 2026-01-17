@@ -29,12 +29,35 @@ const btn0 = document.getElementById("q0");
 const btn1 = document.getElementById("q1");
 const btn2 = document.getElementById("q2");
 
-// standaard startvragen
-const DEFAULT_QUESTIONS = [
-  "Tell me something about your origin and style.",
-  "What makes you unique compared to other pieces?",
-  "Have you ever experienced an interesting event?"
+// pool van 9 startvragen
+const START_QUESTION_POOL = [
+  // basic facts (past bij jullie JSON velden)
+  "How old are you?",
+  "When were you made?",
+  "Who made you?",
+  "Where are you from?",
+  "What material are you made of?",
+  "If you could choose a room today, where would you belong?",
+  "What characteristic are you most proud of, and why?",
+  "Who was your owner?", 
+
+  // fun / flirty icebreakers (hoeven geen facts)
+  "What’s your biggest green flag?",
+  "What’s your biggest red flag?",
+  "Wow, you look stunning!",
+  "I did not expect to fall for a piece of furniture today.",
+  "What kind of person usually falls for you?",
+  "What is your type?"
 ];
+
+function pick3Unique(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, 3);
+}
 
 // start application
 async function initChat() {
@@ -129,7 +152,7 @@ function setupUI() {
   chatBox.innerHTML = ""; 
   addToChat("bot", `Hello! I am candidate #${roundCounter}: ${currentFurniture.title}. You have 5 minutes.`);
   
-  updateButtons(DEFAULT_QUESTIONS);
+  updateButtons(pick3Unique(START_QUESTION_POOL));
 
   if (nextBtn) {
     nextBtn.disabled = false;

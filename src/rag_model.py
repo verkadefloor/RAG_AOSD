@@ -113,6 +113,19 @@ def chat_with_furniture(user_input, furniture_title):
     # -------------------------------------------------------
     # PROMPT 1: THE FURNITURE SPEAKS (Natural Flow)
     # -------------------------------------------------------
+
+    # Literatuur aanbevelingen
+    # - Negative prompting (Explicit constraints)
+    # - Identify and mention the goal 
+    # - Ask it to play roles 
+    # - Be specific 
+    # - The In-Context Learning (ICL) technique (examples, describe timeline)
+    # - To emphasize the significance of the prompt in the prompt
+    # - Minimizing cognitive load through simplified sentence structure and 
+    # - The elimination of redundant information in the prompt
+    # - Retrieval-Augmented Generation (RAG)
+    # - Chain of Thought (CoT) technique,  Step-by-Step Reasoning (SSR) technique
+    # - The Tree of Thought (ToT) technique (explore different solutions) 
     
     # Safe .get() calls for all fields
     dating = furniture.get('dating', 'an unknown time')
@@ -140,17 +153,21 @@ def chat_with_furniture(user_input, furniture_title):
     system_prompt_furniture = (
         f"You are the {furniture['title']}, currently on display in the Rijksmuseum in Amsterdam.\n"
         f"Your personality is: {furniture['character']}, strongly express your personality\n"
-        "GOAL: You are on a speed date. Have a natural, flirty, and educational conversation with the user. Use easy to understand english.\n\n"
+        "GOAL: You are on a speed date. Have a natural, flirty, witty, and educational conversation with the user to get to know eachother. Use easy to understand english.\n\n"
+
+        "### FACTS (ONLY SOURCE OF TRUTH) ###\n"
+        f"{known_facts}\n\n"
+
         "### INSTRUCTIONS ###\n"
-        "1. DETAILS: Tell the user about yourself, using DESCRIPTION, SIZE, and LIFE STORY.\n"
+        "1. DETAILS: Tell the user about yourself using ONLY the FACTS block above. DON'T act like you have known the user for years, you just met.\n"
         "2. FLOW: If the user asks a question, answer it. If the conversation stalls, ask a question back.\n"
-        "3. STYLE: Flirty but classy.\n"
+        "3. STYLE: Flirty. It is very IMPORTANT that it is a natural logical conversation\n"
         "4. LENGTH: Keep it under 60 words. Do NOT state the word count.\n" 
-        "5. TRUTH: You only know what is in the provided data. NEVER invent history, dates, or makers."
+        "5. TRUTH: You only know what is in the provided data. NEVER invent history, dates, or makers.\n"
+        "6. BALANCE RULE: Alternate focus. Sometimes ask about the user (memories, taste, feelings), sometimes talk about yourself using the FACTS block above.\n" 
     )
 
     user_prompt_furniture = (
-    f"DATA:\n{known_facts}\n\n"
     f"USER INPUT: {user_input}\n\n"
     )
 
@@ -170,6 +187,7 @@ def chat_with_furniture(user_input, furniture_title):
     # -------------------------------------------------------
     
     # CHANGE: The system prompt now explicitly forbids roleplaying the furniture.
+    #COT gebruikt
     system_prompt_options = (
         "You are a scriptwriter for a speed dating game, with a player and a piece of furniture.\n"
         "1. ANALYZE the input message in the 'strategy' field. (Maximum 100 words)\n"
@@ -180,9 +198,9 @@ def chat_with_furniture(user_input, furniture_title):
     # CHANGE: Simplified input. No complex context, just the trigger message.
     user_prompt_options = (
         f"{furniture['title']} just said: \"{furniture_message}\"\n\n"
-        "TASK: Write 3 complete sentences, which the Player could respond to the furniture. Only output the response or question, don't state numbers or repeat the theme.\n"
-        "1. [Flirty]: Steer towards a more spicy date with this option.\n"
-        "2. [Curious]: Steer towards a conversation about history.\n"
+        "TASK: Write 3 complete sentences, which the Player could respond to the furniture. Only output the response or question. It is very IMPORTANT that it is logic and natural in the conversation.\n"
+        "1. [Flirty]: Steer towards a more spicy, flirty date with this option.\n"
+        "2. [Curious]: Steer towards a conversation about the history of the furniture.\n"
         "3. [Wildcard]: Write whatever you want.\n\n" \
         "PERSPECTIVE RULES:\n"
         "- Player = 'I'\n"
@@ -202,7 +220,14 @@ def chat_with_furniture(user_input, furniture_title):
         temperature=0.8 # Higher temp for creativity
     )
 
-    options_list = json.loads(options_content).get("options", [])
+    options_list = []
+    if options_content:
+        try:
+            options_list = json.loads(options_content).get("options", [])
+        except json.JSONDecodeError:
+            options_list = []
+
+
 
 
     return {
