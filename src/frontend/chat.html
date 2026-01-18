@@ -20,7 +20,7 @@
 <div class="speeddate-interface">
     <div class="top-layer">
       <div class="top-left-controls">
-          <button id="back-btn" class="nav-btn exit-btn">Exit whole experience</button>
+          <button id="back-btn" class="nav-btn exit-btn">Exit experience</button>
           <button id="next-btn" class="nav-btn next-btn">Next Date</button>
       </div>
       
@@ -30,15 +30,13 @@
       </div>
 
       <div class="top-right-controls">
-        <div class="top-right-controls">
-            <button id="music-btn" class="settings-icon-btn">
-                <span class="material-symbols-outlined">music_note</span>
-            </button>
+          <button id="music-btn" class="settings-icon-btn">
+              <span class="material-symbols-outlined">music_note</span>
+          </button>
 
-            <button id="settings-btn" class="settings-icon-btn">
-                <span class="material-symbols-outlined">settings</span>
-            </button>
-        </div>
+          <button id="settings-btn" class="settings-icon-btn">
+              <span class="material-symbols-outlined">settings</span>
+          </button>
       </div>
     </div>
 
@@ -46,14 +44,11 @@
         <div class="scene-card">
             
             <div class="furniture-spotlight">
-                
                 <h2 id="furniture-name" class="furniture-name-tag">Loading...</h2>
-
                 <div class="image-frame" id="image-stack-container">
                     <img id="img-normal" class="img-layer" alt="Furniture Normal">
                     <img id="img-revealed" class="img-layer revealed-state" alt="Furniture Revealed">
                 </div>
-
                 <div class="furniture-details">
                     <div class="detail-row">
                         <span class="status-dot"></span>
@@ -65,13 +60,11 @@
                         </a>
                     </div>
                 </div>
-
             </div>
 
             <div class="chat-wrapper">
                 <div class="chat-box speech-bubble">
-                    <div id="chat-box" class="chat-scroll-view">
-                        </div>
+                    <div id="chat-box" class="chat-scroll-view"></div>
                 </div>
             </div>
 
@@ -83,21 +76,17 @@
 
     <div class="interaction-layer">
         
-        <div id="options-container" class="question-buttons">
-            <button id="q0" class="chat-btn">q0</button>
-            <button id="q1" class="chat-btn">q1</button>
-            <button id="q2" class="chat-btn">q2</button>
-        </div>
+        <div id="suggestions-container" class="suggestions-wrapper">
+            </div>
 
-        <div id="text-input-container" class="input-controls" style="display: none;">
-            <input type="text" id="user-input" class="chat-input-field" placeholder="Type your reply here..." autocomplete="off">
+        <div id="text-input-container" class="input-controls">
+            <input type="text" id="user-input" class="chat-input-field" placeholder="Ask anything..." autocomplete="off">
             <button id="send-btn" class="chat-btn send-icon-btn">
                 <span class="material-symbols-outlined">send</span>
             </button>
         </div>
 
     </div>
-
 </div>
 
 <div id="settings-modal" class="modal-overlay hidden">
@@ -106,7 +95,6 @@
             <h3>Filter Preferences</h3>
             <button id="close-settings" class="close-btn">&times;</button>
         </div>
-        
         <div class="modal-body">
             <div class="setting-item">
                 <label for="modal-period">Time Period</label>
@@ -129,9 +117,7 @@
                     <option value="5">5 Dates</option>
                 </select>
             </div>
-            
         </div>
-        
         <div class="modal-footer">
             <button id="save-settings" class="nav-btn next-btn">Apply & Restart</button>
         </div>
@@ -144,13 +130,9 @@
             <h3 id="confirm-title">Confirmation</h3>
             <button id="close-confirm" class="close-btn">&times;</button>
         </div>
-        
         <div class="modal-body">
-            <p id="confirm-message" style="margin-bottom: 20px; color: #444; font-size: 1rem;">
-                Are you sure?
-            </p>
+            <p id="confirm-message" style="margin-bottom: 20px; color: #444; font-size: 1rem;">Are you sure?</p>
         </div>
-        
         <div class="modal-footer" style="display: flex; gap: 10px; justify-content: center;">
             <button id="confirm-cancel-btn" class="nav-btn" style="background-color: #999;">No, Return</button>
             <button id="confirm-yes-btn" class="nav-btn next-btn">Yes, Proceed</button>
@@ -162,12 +144,10 @@
     <div class="modal-content times-up-content">
         <div class="modal-header">
             <h3>Time's Up!</h3>
-            </div>
-        
+        </div>
         <div class="modal-body">
             <p class="highlight-text">Fancy a "second date" in real life?</p>
-            <p class="small-text">Leave your email to receive viewing information for this specific piece at the Rijksmuseum.</p>
-
+            <p class="small-text">Leave your email to receive viewing information.</p>
             <div class="email-signup-wrapper">
                 <form id="times-up-form">
                     <input type="email" id="times-up-email" placeholder="Your email address" required class="modal-input">
@@ -178,40 +158,34 @@
                 </div>
             </div>
         </div>
-        
         <div class="modal-footer column-layout">
             <button id="modal-next-round-btn" class="nav-btn next-btn full-width">Start Next Speeddate</button>
-            
             <a href="/" id="modal-exit-link" class="text-link">No thanks, exit experience</a>
         </div>
     </div>
 </div>
+
 <div id="context-modal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
             <h3>Historical Context</h3>
             <button id="close-context-x" class="close-btn">&times;</button>
         </div>
-        
         <div class="modal-body">
             <p style="line-height: 1.6; color: #555; font-size: 0.95rem;">
-                The objects featured in this experience are authentic historical artifacts from the Rijksmuseum. They originate from eras with different societal norms and worldviews.
-            </p>
-            <p style="line-height: 1.6; color: #555; font-size: 0.95rem; margin-top: 15px;">
-                Please view the pieces with historical awareness. Note that the characters you chat with are modern, fictional reinterpretations designed for today's audience.
+                The objects featured here are authentic historical artifacts. Please view them with historical awareness.
             </p>
         </div>
-        
         <div class="modal-footer" style="text-align: center;">
             <button id="close-context-btn" class="nav-btn next-btn">Understood</button>
         </div>
     </div>
 </div>
 
-<!-- music player -->
 <audio id="bg-music" loop autoplay>
     <source src="audio/music.mp3" type="audio/mpeg">
 </audio>
+
 <script src="js/chat.js"></script>
 </body>
 </html>

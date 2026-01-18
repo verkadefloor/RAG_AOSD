@@ -1,7 +1,7 @@
 /* =========================================
    CONFIGURATION & GLOBALS
    ========================================= */
-const TIME_LIMIT_SECONDS = 300; 
+const TIME_LIMIT_SECONDS = 4*60; 
 const SWITCH_DELAY_MS = 3000;      
 const REVEAL_DELAY_MS = 1500;      
 
@@ -14,6 +14,10 @@ let revealTimeout = null;
 let maxRounds = 3;
 let timeLeft = 0;           
 let pendingAction = null;   
+
+// GLOBAL DATA
+let globalQuestionPool = []; 
+let usedQuestionsInRound = []; 
 
 // DOM Elements
 const furnitureNameEl = document.getElementById("furniture-name");
@@ -29,52 +33,13 @@ const imgContainer = document.getElementById("image-stack-container");
 const imgNormalEl = document.getElementById("img-normal");
 const imgRevealedEl = document.getElementById("img-revealed");
 
-// Question Buttons
-const btn0 = document.getElementById("q0");
-const btn1 = document.getElementById("q1");
-const btn2 = document.getElementById("q2");
-
-// NEW: Input Elements
-const optionsContainer = document.getElementById("options-container");
+// Interaction Elements
+const suggestionsContainer = document.getElementById("suggestions-container");
 const inputContainer = document.getElementById("text-input-container");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
-// NEW: State tracking
-let isFirstInteraction = true;
- 
-// --- MERGED: Question Pool Logic (From HEAD) ---
-// pool of 9 questions
-const START_QUESTION_POOL = [
-  // basic facts
-  "How old are you?",
-  "When were you made?",
-  "Who made you?",
-  "Where are you from?",
-  "What material are you made of?",
-  "If you could choose a room today, where would you belong?",
-  "What characteristic are you most proud of, and why?",
-  "Who was your owner?", 
-
-  // fun / flirty icebreakers
-  "What’s your biggest green flag?",
-  "What’s your biggest red flag?",
-  "Wow, you look stunning!",
-  "I did not expect to fall for a piece of furniture today.",
-  "What kind of person usually falls for you?",
-  "What is your type?"
-];
-
-function pick3Unique(arr) {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy.slice(0, 3);
-}
-
-// --- MERGED: Modal Elements (From frontend-ui) ---
+// Modals
 const confirmModal = document.getElementById("confirmation-modal");
 const confirmTitle = document.getElementById("confirm-title");
 const confirmMsg = document.getElementById("confirm-message");
@@ -83,31 +48,74 @@ const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
 const confirmCloseX = document.getElementById("close-confirm");
 
 const timesUpModal = document.getElementById("times-up-modal");
-const timesUpName = document.getElementById("times-up-name");
 const timesUpForm = document.getElementById("times-up-form");
 const timesUpEmail = document.getElementById("times-up-email");
 const timesUpSuccess = document.getElementById("times-up-success");
 const modalNextBtn = document.getElementById("modal-next-round-btn");
 
 /* =========================================
-   INITIALIZATION & ROUND LOGIC
+   HELPER FUNCTIONS
+   ========================================= */
+
+function pickRandomQuestions(arr, count = 2) {
+    if (!arr || arr.length === 0) return ["Hello?", "How are you?"];
+
+    // Filter out questions that have been asked/clicked
+    const available = arr.filter(q => !usedQuestionsInRound.includes(q));
+
+    // Decide pool: If we have enough unused questions, pick from them, if empty recycle the full list.
+    let sourcePool = (available.length >= count) ? available : arr;
+
+    const copy = [...sourcePool];
+    
+    // Shuffle
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    
+    return copy.slice(0, count);
+}
+
+/* =========================================
+   INITIALIZATION & DATA LOADING
    ========================================= */
 
 async function initChat() {
   try {
-    const response = await fetch('/get_furniture_list'); 
-    if (!response.ok) throw new Error("Kon lijst niet laden");
-    
-    const data = await response.json();
+    // Fetch Furniture List
+    const furnitureRes = await fetch('/get_furniture_list'); 
+    if (!furnitureRes.ok) throw new Error("Could not load furniture list");
+    const furnitureData = await furnitureRes.json();
 
+    // Fetch Questions from Backend
+    try {
+        const questionsRes = await fetch('/get_questions');
+        if (questionsRes.ok) {
+            const loadedQuestions = await questionsRes.json();
+            if (loadedQuestions && loadedQuestions.length > 0) {
+                globalQuestionPool = loadedQuestions;
+                console.log("Questions loaded:", globalQuestionPool.length);
+            } else {
+                throw new Error("Empty list");
+            }
+        } else {
+            throw new Error("Route failed");
+        }
+    } catch (err) {
+        console.warn("Using fallback questions. Reason:", err);
+        globalQuestionPool = ["Who are you?", "How old are you?", "Where are you from?"];
+    }
+
+    // Setup Preferences
     let selectedPeriod = localStorage.getItem("selectedPeriod");
     let roundsPref = localStorage.getItem("numberOfRounds");
     
     selectedPeriod = selectedPeriod ? selectedPeriod.toLowerCase().trim() : 'all';
     maxRounds = roundsPref ? parseInt(roundsPref) : 3; 
 
-    // Find Matches
-    let strictMatches = data.filter(item => {
+    // Matchmaking Logic
+    let strictMatches = furnitureData.filter(item => {
       const itemPeriod = (item.period || "").toLowerCase().trim();
       return (selectedPeriod === 'all' || itemPeriod === selectedPeriod);
     });
@@ -119,7 +127,7 @@ async function initChat() {
       const primaryCandidates = strictMatches.sort(() => 0.5 - Math.random());
       const needed = maxRounds - primaryCandidates.length;
       const primaryTitles = primaryCandidates.map(i => i.title);
-      const potentialFillers = data.filter(item => !primaryTitles.includes(item.title));
+      const potentialFillers = furnitureData.filter(item => !primaryTitles.includes(item.title));
       const fillers = potentialFillers.sort(() => 0.5 - Math.random()).slice(0, needed);
       matches = [...primaryCandidates, ...fillers];
     }
@@ -128,7 +136,7 @@ async function initChat() {
 
   } catch (error) {
     console.error("Critical Error:", error);
-    chatBox.innerHTML = "<p style='color:red'>Server connection failed.</p>";
+    chatBox.innerHTML = "<p style='color:red; text-align:center; padding:20px;'>Server connection failed. Please restart.</p>";
   }
 }
 
@@ -191,6 +199,9 @@ function endSession() {
 function setupUI() {
   if (revealTimeout) clearTimeout(revealTimeout);
 
+  // --- Reset Question Memory for new date ---
+  usedQuestionsInRound = [];
+
   // --- Reset Image & Name ---
   imgRevealedEl.style.transition = 'none';
   imgContainer.classList.remove("show-reveal");
@@ -207,19 +218,20 @@ function setupUI() {
   imgRevealedEl.src = currentFurniture.image_after;
   imgNormalEl.onerror = () => { imgNormalEl.src = "images/fallback.png"; };
 
-  // --- Reset Chat & Input State ---
+  // --- Reset Chat ---
   chatBox.innerHTML = ""; 
   addToChat("bot", `Hello! I am candidate ${roundCounter}. Let's get to know each other!`);
   
-  // RESET LOGIC: 
-  isFirstInteraction = true; // Flag reset
-  
-  if(optionsContainer) optionsContainer.style.display = 'flex'; // Show buttons
-  if(inputContainer) inputContainer.style.display = 'none';     // Hide input
+  // --- Reset Input & Suggestions ---
+  if(userInput) {
+      userInput.value = "";
+      userInput.disabled = false;
+      userInput.focus();
+  }
+  if(sendBtn) sendBtn.disabled = false;
 
-  // Generate 3 random questions for the start
-  updateButtons(pick3Unique(START_QUESTION_POOL));
-  setButtonsState(true); 
+  // Render first batch
+  renderSuggestions(pickRandomQuestions(globalQuestionPool, 2));
 
   // --- Reveal Animation ---
   revealTimeout = setTimeout(() => {
@@ -237,20 +249,17 @@ function setupUI() {
    CHAT & INTERACTION LOGIC
    ========================================= */
 
-function updateButtons(questionsArray) {
-  const buttons = [btn0, btn1, btn2];
-  buttons.forEach((btn, index) => {
-    if (btn && questionsArray[index]) {
-      btn.textContent = questionsArray[index];
-    }
-  });
-}
+function renderSuggestions(questionsArray) {
+    if(!suggestionsContainer) return;
+    suggestionsContainer.innerHTML = ""; // Clear old chips
 
-function setButtonsState(isEnabled) {
-  const buttons = [btn0, btn1, btn2];
-  buttons.forEach(btn => {
-    if(btn) btn.disabled = !isEnabled;
-  });
+    questionsArray.forEach(qText => {        
+        const btn = document.createElement("button");
+        btn.className = "suggestion-chip";
+        btn.textContent = qText;
+        btn.onclick = () => askQuestion(qText);
+        suggestionsContainer.appendChild(btn);
+    });
 }
 
 function addToChat(sender, text) {
@@ -269,28 +278,25 @@ function addToChat(sender, text) {
 
 async function askQuestion(questionText) {
   if (!currentFurniture) return;
-  if (!questionText || !questionText.trim()) return; // Prevent empty sends
+  if (!questionText || !questionText.trim()) return; 
   
-  // 1. Add User Message to Chat
+  // Add User Message to Chat
   addToChat("user", questionText);
   
-  // 2. SWAP UI (If this is the first move)
-  if (isFirstInteraction) {
-      isFirstInteraction = false;
-      if(optionsContainer) optionsContainer.style.display = 'none'; // Hide buttons
-      if(inputContainer) inputContainer.style.display = 'flex';     // Show text box
-      
-      // Auto-focus the input for smoother UX
-      if(userInput) setTimeout(() => userInput.focus(), 50);
+  // Mark as used prevent this specific question from appearing again
+  // We use the exact string to match the JSON pool
+  if (!usedQuestionsInRound.includes(questionText)) {
+      usedQuestionsInRound.push(questionText);
   }
 
-  // 3. Disable Inputs while waiting
-  setButtonsState(false);
+  // Clear Input & Disable Controls
+  if(userInput) userInput.value = "";
   if(userInput) userInput.disabled = true;
   if(sendBtn) sendBtn.disabled = true;
 
-  // Clear input box
-  if(userInput) userInput.value = "";
+  // Visually disable chips
+  const chips = document.querySelectorAll(".suggestion-chip");
+  chips.forEach(c => c.disabled = true);
 
   try {
     const res = await fetch("/ask", {
@@ -311,20 +317,20 @@ async function askQuestion(questionText) {
       addToChat("bot", `Error: ${data.error}`);
     } else {
       addToChat("bot", data.answer);
-      // NOTE: We don't update buttons anymore because they are hidden!
+      
+      // Generate new suggestions
+      // The helper function will now filter out the question has been pushed to 'usedQuestionsInRound'
+      renderSuggestions(pickRandomQuestions(globalQuestionPool, 2));
     }
 
   } catch (err) {
     console.error("Interaction failed:", err);
     showConnectionError();
   } finally {
-    // 4. Re-enable Inputs
-    setButtonsState(true);
+    // Re-enable Inputs
     if(userInput) userInput.disabled = false;
     if(sendBtn) sendBtn.disabled = false;
-    
-    // Keep focus on input for fast chatting
-    if(userInput && !isFirstInteraction) userInput.focus();
+    if(userInput) userInput.focus();
   }
 }
 
@@ -346,11 +352,6 @@ function showConnectionError() {
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
-
-// Listeners
-btn0.onclick = function() { askQuestion(this.textContent); };
-btn1.onclick = function() { askQuestion(this.textContent); };
-btn2.onclick = function() { askQuestion(this.textContent); };
 
 /* =========================================
    CONFIRMATION MODAL LOGIC
@@ -426,21 +427,15 @@ function showTimesUpModal() {
     if(timesUpForm) timesUpForm.style.display = 'flex';
     if(timesUpSuccess) timesUpSuccess.classList.add('hidden');
     if(timesUpEmail) timesUpEmail.value = '';
-
-    if(timesUpName) timesUpName.textContent = currentFurniture ? currentFurniture.title : "this piece";
-
     timesUpModal.classList.remove('hidden');
 }
 
 if (timesUpForm) {
     timesUpForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const email = timesUpEmail.value;
         const furnitureTitle = currentFurniture ? currentFurniture.title : "Unknown";
-
         console.log(`Email captured for ${furnitureTitle}: ${email}`);
-
         timesUpForm.style.display = 'none';
         timesUpSuccess.classList.remove('hidden');
     });
@@ -499,12 +494,6 @@ if (settingsModal) {
     });
 }
 
-const imageStackContainer = document.getElementById('image-stack-container');
-if (imageStackContainer) {
-    imageStackContainer.addEventListener('click', function() {
-        this.classList.toggle('show-reveal');
-    });
-}
 /* =========================================
    HISTORICAL CONTEXT MODAL LOGIC
    ========================================= */
@@ -533,43 +522,49 @@ if (contextModal) {
     });
 }
 
-// Make the "Send" button work
+/* =========================================
+   INPUT & MUSIC EVENT LISTENERS
+   ========================================= */
+
 if (sendBtn) {
     sendBtn.onclick = () => {
         askQuestion(userInput.value);
     };
 }
 
-// Make the "Enter" key work
 if (userInput) {
     userInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             askQuestion(userInput.value);
         }
     });
-  }
+}
 
-/* ======================
-   BACKGROUND MUSIC LOGIC
-   ====================== */
+// --- Image Interaction ---
+const imageStackContainer = document.getElementById('image-stack-container');
+if (imageStackContainer) {
+    imageStackContainer.addEventListener('click', function() {
+        this.classList.toggle('show-reveal');
+    });
+}
+
+// --- Music Player ---
 const musicBtn = document.getElementById('music-btn');
 const bgMusic = document.getElementById('bg-music');
 
 if (musicBtn && bgMusic) {
     const icon = musicBtn.querySelector('span');
-    
-    // Set volume 
     bgMusic.volume = 0.3; 
+    
+    // Attempt Auto-play
     const playPromise = bgMusic.play();
 
     if (playPromise !== undefined) {
         playPromise.then(() => {
             icon.textContent = 'music_note';
         }).catch(error => {
-            // If autoplay was blocked by the browser, set the icon to 'off' and wait for the first user interaction.
             console.log("Autoplay prevented. Waiting for user interaction.");
             icon.textContent = 'music_off';
-            
             document.addEventListener('click', function enableAudio() {
                 bgMusic.play();
                 icon.textContent = 'music_note';
@@ -577,17 +572,18 @@ if (musicBtn && bgMusic) {
             }, { once: true });
         });
     }
+
     musicBtn.addEventListener('click', (e) => {
         e.stopPropagation(); 
-
         if (bgMusic.paused) {
             bgMusic.play();
-            icon.textContent = 'music_note'; // Note icon = Playing
+            icon.textContent = 'music_note'; 
         } else {
             bgMusic.pause();
-            icon.textContent = 'music_off';  // Crossed icon = Muted
+            icon.textContent = 'music_off';
         }
     });
 }
-// Start
+
+// Start Application
 initChat();

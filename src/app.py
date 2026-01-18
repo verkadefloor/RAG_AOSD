@@ -15,6 +15,10 @@ app = Flask(
 with open("data/raw/furniture_data.json", "r", encoding="utf-8") as f:
     furniture_data = json.load(f)
 
+# Load questions data
+with open("data/raw/questions.json", "r", encoding="utf-8") as f:
+    questions_data = json.load(f)
+
 
 # Flask routes
 @app.route("/")
@@ -36,6 +40,10 @@ def serve_static(filename):
 def get_furniture_list():
     return jsonify(furniture_data)
 
+@app.route('/get_questions')
+def get_questions():
+    return jsonify(questions_data)
+
 
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -52,7 +60,7 @@ def ask():
     if not furniture:
         return jsonify({"error": f"Furniture '{furniture_title}' not found."}), 404
 
-    # Call the LLM function (which now returns a Dict, not a String)
+    # Call the LLM function
     # Expected format: {'message': "...", 'options': ["...", "...", "..."]}
     response_data = chat_with_furniture(question, furniture_title)
 

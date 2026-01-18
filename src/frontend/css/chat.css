@@ -9,7 +9,7 @@
     flex-direction: column;
     justify-content: center; 
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     box-shadow: 0 0 30px rgba(0,0,0,0.5);
     position: relative;
     overflow: hidden;
@@ -315,13 +315,76 @@
     min-height: auto; 
     background: transparent;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
-    padding-bottom: 0;
-    padding-top: 0;
+    align-items: center;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    gap: 10px;
     width: 100%;
 }
 
+.suggestions-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 95%;             
+    max-width: 600px;
+    padding: 20px 15px 15px; 
+    margin: 15px auto;       
+    box-sizing: border-box;
+
+    border: 2px solid #b5291ca6;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+
+
+.suggestions-wrapper::before {
+    content: "Get the most out of your date with these suggestions!"; 
+    position: absolute;
+    top: -12px; 
+    left: 20px;
+    background-color: #f8f5f2; 
+    padding: 0 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #b5291ca6;
+}
+
+.suggestion-chip {
+    background-color: rgba(255, 255, 255, 0.9); 
+    border: 1px solid #b5291ca6;
+    color: #6b5b4e;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    white-space: normal;      
+    text-align: center;        
+    max-width: 100%;           
+    line-height: 1.3;          
+    flex: 1 1 auto;           
+}
+.suggestion-chip:hover {
+    background-color: #b5291ca6;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.suggestion-chip:disabled {
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
+}
 .question-buttons {
     display: flex;
     flex-direction: column;
@@ -352,7 +415,7 @@
     display: flex;
     gap: 10px;
     width: 100%;
-    max-width: 500px; /* Matches your chat area width */
+    max-width: 500px;
     margin: 0 auto;
     padding: 0 5px;
     box-sizing: border-box;
@@ -363,7 +426,7 @@
     flex-grow: 1;
     padding: 12px 20px;
     border-radius: 25px;
-    border: 1px solid #b5291ca6; /* Same color as your buttons */
+    border: 1px solid #b5291ca6; 
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     color: #444;
@@ -373,11 +436,10 @@
 }
 
 .chat-input-field:focus {
-    box-shadow: 0 0 0 3px rgba(181, 41, 28, 0.1); /* Subtle red glow */
+    box-shadow: 0 0 0 3px rgba(181, 41, 28, 0.1);
 }
 
 /* The Round Send Button */
-/* Note: This inherits colors from .chat-btn */
 .send-icon-btn {
     width: 50px;
     height: 50px;
