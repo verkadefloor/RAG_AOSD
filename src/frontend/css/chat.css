@@ -348,6 +348,52 @@
     transform: scale(1.02);
 }
 
+.input-controls {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px; /* Matches your chat area width */
+    margin: 0 auto;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+/* The typing box */
+.chat-input-field {
+    flex-grow: 1;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 1px solid #b5291ca6; /* Same color as your buttons */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #444;
+    outline: none;
+    transition: box-shadow 0.3s;
+    background: #fff;
+}
+
+.chat-input-field:focus {
+    box-shadow: 0 0 0 3px rgba(181, 41, 28, 0.1); /* Subtle red glow */
+}
+
+/* The Round Send Button */
+/* Note: This inherits colors from .chat-btn */
+.send-icon-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    min-width: 50px; 
+}
+
+.send-icon-btn .material-symbols-outlined {
+    font-size: 24px;
+    color: #b5291ca6;
+}
+
 /* --- Settings Button --- */
 .settings-icon-btn {
     background: none;

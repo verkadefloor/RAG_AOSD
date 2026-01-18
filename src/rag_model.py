@@ -16,39 +16,6 @@ client = OpenAI(
 Model_used = "qwen3-24b-a4b-imatrix"
 
 # -------------------------
-# Schema Definitions
-# -------------------------
-
-OPTIONS_SCHEMA = {
-    "type": "json_schema",
-    "json_schema": {
-        "name": "dialogue_options",
-        "strict": True,
-        "schema": {
-            "type": "object",
-            "properties": {
-                "strategy": {
-                    "type": "string",
-                    "description": "Briefly analyze the furniture's tone and plan 3 distinct replies (Flirty, Curious, Neutral)."
-                },
-                "options": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "description": "A dialogue line for the PLAYER. Use 'I' for player."
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                }
-            },
-            # Require the strategy field so the model MUST fill it
-            "required": ["strategy", "options"],
-            "additionalProperties": False
-        }
-    }
-}
-
-# -------------------------
 # Load Data
 # -------------------------
 with open("data/raw/furniture_data.json", "r", encoding="utf-8") as f:
@@ -181,56 +148,7 @@ def chat_with_furniture(user_input, furniture_title):
 
     if not furniture_message:
         furniture_message = "I seem to be lost for words..."
-
-    # -------------------------------------------------------
-    # PROMPT 2: GENERATE USER OPTIONS (Spicy vs. History)
-    # -------------------------------------------------------
     
-    # CHANGE: The system prompt now explicitly forbids roleplaying the furniture.
-    #COT gebruikt
-    system_prompt_options = (
-        "You are a scriptwriter for a speed dating game, with a player and a piece of furniture.\n"
-        "1. ANALYZE the input message in the 'strategy' field. (Maximum 100 words)\n"
-        "2. WRITE 3 distinct lines for the PLAYER in the 'options' list.\n"
-        "Perspective: Do NOT write as the furniture. Write AS THE PLAYER."
-    )
-
-    # CHANGE: Simplified input. No complex context, just the trigger message.
-    user_prompt_options = (
-        f"{furniture['title']} just said: \"{furniture_message}\"\n\n"
-        "TASK: Write 3 complete sentences, which the Player could respond to the furniture. Only output the response or question. It is very IMPORTANT that it is logic and natural in the conversation.\n"
-        "1. [Flirty]: Steer towards a more spicy, flirty date with this option.\n"
-        "2. [Curious]: Steer towards a conversation about the history of the furniture.\n"
-        "3. [Wildcard]: Write whatever you want.\n\n" \
-        "PERSPECTIVE RULES:\n"
-        "- Player = 'I'\n"
-        "- Furniture = 'You'\n"
-        "CONSTRAINTS:\n"
-        "- Use the 'strategy' field to think about the tone before writing.\n"
-        "- Keep options under 15 words.\n"
-        "- Do NOT state numbers or themes in the final text."
-    )
-
-    options_content, err = generate_with_retry(
-        messages=[
-            {"role": "system", "content": system_prompt_options},
-            {"role": "user", "content": user_prompt_options}
-        ],
-        response_format=OPTIONS_SCHEMA,
-        temperature=0.8 # Higher temp for creativity
-    )
-
-    options_list = []
-    if options_content:
-        try:
-            options_list = json.loads(options_content).get("options", [])
-        except json.JSONDecodeError:
-            options_list = []
-
-
-
-
     return {
-        "message": furniture_message,
-        "options": options_list
+        "message": furniture_message        
     }

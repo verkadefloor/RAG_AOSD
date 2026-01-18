@@ -82,11 +82,20 @@
     </div>
 
     <div class="interaction-layer">
-        <div class="question-buttons">
+        
+        <div id="options-container" class="question-buttons">
             <button id="q0" class="chat-btn">q0</button>
             <button id="q1" class="chat-btn">q1</button>
             <button id="q2" class="chat-btn">q2</button>
         </div>
+
+        <div id="text-input-container" class="input-controls" style="display: none;">
+            <input type="text" id="user-input" class="chat-input-field" placeholder="Type your reply here..." autocomplete="off">
+            <button id="send-btn" class="chat-btn send-icon-btn">
+                <span class="material-symbols-outlined">send</span>
+            </button>
+        </div>
+
     </div>
 
 </div>

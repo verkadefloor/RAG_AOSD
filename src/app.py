@@ -66,7 +66,6 @@ def ask():
     # Return the structured data to the frontend
     return jsonify({
         "answer": response_data.get("message", "I am speechless..."), # The character text
-        "options": response_data.get("options", []),                  # The suggested questions
         "audio": audio_base64
     })
 

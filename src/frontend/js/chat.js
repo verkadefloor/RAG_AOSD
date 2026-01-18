@@ -1,7 +1,7 @@
 /* =========================================
    CONFIGURATION & GLOBALS
    ========================================= */
-const TIME_LIMIT_SECONDS = 30; 
+const TIME_LIMIT_SECONDS = 300; 
 const SWITCH_DELAY_MS = 3000;      
 const REVEAL_DELAY_MS = 1500;      
 
@@ -33,6 +33,15 @@ const imgRevealedEl = document.getElementById("img-revealed");
 const btn0 = document.getElementById("q0");
 const btn1 = document.getElementById("q1");
 const btn2 = document.getElementById("q2");
+
+// NEW: Input Elements
+const optionsContainer = document.getElementById("options-container");
+const inputContainer = document.getElementById("text-input-container");
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+
+// NEW: State tracking
+let isFirstInteraction = true;
  
 // --- MERGED: Question Pool Logic (From HEAD) ---
 // pool of 9 questions
@@ -182,9 +191,10 @@ function endSession() {
 function setupUI() {
   if (revealTimeout) clearTimeout(revealTimeout);
 
+  // --- Reset Image & Name ---
   imgRevealedEl.style.transition = 'none';
   imgContainer.classList.remove("show-reveal");
-  void imgRevealedEl.offsetHeight;
+  void imgRevealedEl.offsetHeight; // Force reflow
   imgRevealedEl.style.transition = ''; 
 
   furnitureNameEl.textContent = currentFurniture.title;
@@ -197,14 +207,21 @@ function setupUI() {
   imgRevealedEl.src = currentFurniture.image_after;
   imgNormalEl.onerror = () => { imgNormalEl.src = "images/fallback.png"; };
 
+  // --- Reset Chat & Input State ---
   chatBox.innerHTML = ""; 
   addToChat("bot", `Hello! I am candidate ${roundCounter}. Let's get to know each other!`);
   
-// --- MERGED LOGIC: Use Random Questions + Frontend UI Animations ---
-  updateButtons(pick3Unique(START_QUESTION_POOL));
+  // RESET LOGIC: 
+  isFirstInteraction = true; // Flag reset
   
+  if(optionsContainer) optionsContainer.style.display = 'flex'; // Show buttons
+  if(inputContainer) inputContainer.style.display = 'none';     // Hide input
+
+  // Generate 3 random questions for the start
+  updateButtons(pick3Unique(START_QUESTION_POOL));
   setButtonsState(true); 
 
+  // --- Reveal Animation ---
   revealTimeout = setTimeout(() => {
       if(imgContainer) imgContainer.classList.add("show-reveal");
   }, REVEAL_DELAY_MS);
@@ -252,9 +269,28 @@ function addToChat(sender, text) {
 
 async function askQuestion(questionText) {
   if (!currentFurniture) return;
+  if (!questionText || !questionText.trim()) return; // Prevent empty sends
   
+  // 1. Add User Message to Chat
   addToChat("user", questionText);
+  
+  // 2. SWAP UI (If this is the first move)
+  if (isFirstInteraction) {
+      isFirstInteraction = false;
+      if(optionsContainer) optionsContainer.style.display = 'none'; // Hide buttons
+      if(inputContainer) inputContainer.style.display = 'flex';     // Show text box
+      
+      // Auto-focus the input for smoother UX
+      if(userInput) setTimeout(() => userInput.focus(), 50);
+  }
+
+  // 3. Disable Inputs while waiting
   setButtonsState(false);
+  if(userInput) userInput.disabled = true;
+  if(sendBtn) sendBtn.disabled = true;
+
+  // Clear input box
+  if(userInput) userInput.value = "";
 
   try {
     const res = await fetch("/ask", {
@@ -275,16 +311,20 @@ async function askQuestion(questionText) {
       addToChat("bot", `Error: ${data.error}`);
     } else {
       addToChat("bot", data.answer);
-      if (Array.isArray(data.options) && data.options.length > 0) {
-          updateButtons(data.options);
-      }
+      // NOTE: We don't update buttons anymore because they are hidden!
     }
 
   } catch (err) {
     console.error("Interaction failed:", err);
     showConnectionError();
   } finally {
+    // 4. Re-enable Inputs
     setButtonsState(true);
+    if(userInput) userInput.disabled = false;
+    if(sendBtn) sendBtn.disabled = false;
+    
+    // Keep focus on input for fast chatting
+    if(userInput && !isFirstInteraction) userInput.focus();
   }
 }
 
@@ -492,6 +532,22 @@ if (contextModal) {
         if (e.target === contextModal) closeContext();
     });
 }
+
+// Make the "Send" button work
+if (sendBtn) {
+    sendBtn.onclick = () => {
+        askQuestion(userInput.value);
+    };
+}
+
+// Make the "Enter" key work
+if (userInput) {
+    userInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            askQuestion(userInput.value);
+        }
+    });
+  }
 
 /* ======================
    BACKGROUND MUSIC LOGIC
