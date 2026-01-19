@@ -252,7 +252,14 @@ function startTimer(duration) {
     if (timeLeft < 0) {
       clearInterval(timerInterval);
       if (confirmModal) confirmModal.classList.add('hidden');
+      
       addToChat("bot", "<em>Time is up! The session has ended.</em>");
+      
+      if(userInput) userInput.disabled = true;
+      if(sendBtn) sendBtn.disabled = true;
+      const chips = document.querySelectorAll(".suggestion-chip");
+      chips.forEach(c => c.disabled = true);
+
       showTimesUpModal();
     }
   }, 1000);
@@ -536,6 +543,11 @@ if (backBtn) backBtn.onclick = () => requestConfirmation('exit');
 function showTimesUpModal() {
     if (!timesUpModal) return;
 
+    const popupLink = document.getElementById('times-up-collection-link');
+    if (popupLink && currentFurniture) {
+        popupLink.href = currentFurniture.url || "#";
+    }
+
     if(timesUpForm) timesUpForm.style.display = 'flex';
     if(timesUpSuccess) timesUpSuccess.classList.add('hidden');
     if(timesUpEmail) timesUpEmail.value = '';
@@ -696,6 +708,28 @@ if (musicBtn && bgMusic) {
         }
     });
 }
+/* =========================================
+   TIME'S UP POPUP INTERACTIONS
+   ========================================= */
 
+const closeTimesUpX = document.getElementById('close-times-up-x');
+function closeTimesUp() {
+    if (timesUpModal) timesUpModal.classList.add('hidden');
+}
+
+// Click the X button
+if (closeTimesUpX) {
+    closeTimesUpX.addEventListener('click', closeTimesUp);
+}
+
+// Click outside the modal 
+if (timesUpModal) {
+    timesUpModal.addEventListener('click', (e) => {
+        
+        if (e.target === timesUpModal) {
+            closeTimesUp();
+        }
+    });
+}
 // Start Application
 initChat();
