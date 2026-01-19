@@ -295,7 +295,30 @@
     border-radius: 8px;
     line-height: 1.4;
 }
-.chat-message.bot { color: #333; }
+
+/* --- Bot Message Layout --- */
+.chat-message.bot { 
+    color: #333;
+    display: flex;       /* Enable Flexbox */
+    align-items: flex-start; /* Align items to the top */
+    gap: 10px;           /* Space between the text block and the speaker button */
+    text-align: left;    /* Ensure text aligns left */
+}
+
+/* New Wrapper: Holds the Name and Text together */
+.message-content {
+    flex: 1;             /* Allow this block to take up all available width */
+    min-width: 0;        /* Prevents layout breaking on very long words */
+    display: flex;       
+    flex-direction: column; /* Forces Name to be ABOVE Text */
+}
+
+/* Ensure the speaker button doesn't shrink */
+/* .chat-audio-btn {
+    flex-shrink: 0;
+    margin-top: 5px; /* Visual adjustment to align with the first line of text */
+/* } */
+
 .chat-message.user {
     color: #666;
     text-align: right;
@@ -307,6 +330,23 @@
     font-size: 0.8em;
     color: #999;
     margin-bottom: 2px;
+}
+
+.chat-message > strong, 
+.message-content > strong {
+    display: block;       /* Forces the name to its own line */
+    font-size: 0.8em;     /* Small text */
+    color: #999;          /* Gray color */
+    margin-bottom: 2px;
+}
+
+/* --- 2. Bold Text INSIDE the Message (Inline) --- */
+/* This targets any strong tags hidden inside the text span */
+.chat-message span strong {
+    display: inline;      /* Keeps it flowing in the sentence */
+    color: inherit;       /* Uses the normal text color (not gray) */
+    font-size: inherit;   /* Uses normal text size */
+    font-weight: 700;     /* Standard bold */
 }
 
 /* --- 3. Bottom Layer (Interaction) --- */
@@ -324,6 +364,7 @@
     width: 100%;
 }
 
+/* Container for all suggestions (The box with the label) */
 .suggestions-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -334,13 +375,11 @@
     padding: 20px 15px 15px; 
     margin: 15px auto;       
     box-sizing: border-box;
-
     border: 2px solid #b5291ca6;
     border-radius: 15px;
     background-color: rgba(255, 255, 255, 0.5);
     position: relative;
 }
-
 
 .suggestions-wrapper::before {
     content: "Get the most out of your date with these suggestions!"; 
@@ -355,36 +394,100 @@
     color: #b5291ca6;
 }
 
-.suggestion-chip {
-    background-color: rgba(255, 255, 255, 0.9); 
+/* --- Suggestion Item (Wrapper) --- */
+.suggestion-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0; 
+    margin: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     border: 1px solid #b5291ca6;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.suggestion-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #fff;
+}
+
+/* Updated Chip Style (Now inside the wrapper) */
+.suggestion-chip {
+    background-color: transparent; 
+    border: none;
     color: #6b5b4e;
     padding: 8px 12px;
-    border-radius: 20px;
     font-family: 'Montserrat', sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     white-space: normal;      
-    text-align: center;        
+    text-align: left;        
     max-width: 100%;           
     line-height: 1.3;          
-    flex: 1 1 auto;           
+    box-shadow: none; 
+    /* Add a small separator line between text and speaker icon */
+    border-right: 1px solid rgba(181, 41, 28, 0.2); 
 }
+
 .suggestion-chip:hover {
-    background-color: #b5291ca6;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #fceceb; /* Light red hover effect */
+    transform: none; 
 }
 
 .suggestion-chip:disabled {
     opacity: 0.5;
     cursor: default;
-    transform: none;
 }
+
+/* --- Speaker Button Styles --- */
+.suggestion-speaker-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 10px;
+    color: #b5291ca6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.suggestion-speaker-btn:hover {
+    background-color: #fceceb;
+}
+
+/* Small speaker button inside chat messages */
+.chat-audio-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #b5291ca6;
+    opacity: 0.6;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.chat-audio-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background-color: rgba(181, 41, 28, 0.05);
+    border-radius: 50%;
+}
+
+.chat-audio-btn .material-symbols-outlined {
+    font-size: 20px; 
+}
+
+/* --- Input Controls (Unchanged) --- */
 .question-buttons {
     display: flex;
     flex-direction: column;
@@ -421,7 +524,6 @@
     box-sizing: border-box;
 }
 
-/* The typing box */
 .chat-input-field {
     flex-grow: 1;
     padding: 12px 20px;
@@ -439,7 +541,6 @@
     box-shadow: 0 0 0 3px rgba(181, 41, 28, 0.1);
 }
 
-/* The Round Send Button */
 .send-icon-btn {
     width: 50px;
     height: 50px;
@@ -719,4 +820,17 @@
 /* --- Utility Classes --- */
 .hidden {
     display: none !important;
+}
+
+/* Spinner Animation for TTS loading */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.tts-loading {
+    cursor: not-allowed !important;
+    opacity: 0.7;
+    animation: spin 1s linear infinite; /* Rotates the icon */
+    pointer-events: none; /* Physically prevents clicking */
 }

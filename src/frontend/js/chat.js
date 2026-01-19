@@ -18,6 +18,8 @@ let pendingAction = null;
 // GLOBAL DATA
 let globalQuestionPool = []; 
 let usedQuestionsInRound = []; 
+let isTTSLoading = false;   // Locks the interface while fetching
+let currentTTSAudio = null; // Tracks the currently playing audio object
 
 // DOM Elements
 const furnitureNameEl = document.getElementById("furniture-name");
@@ -75,6 +77,76 @@ function pickRandomQuestions(arr, count = 2) {
     }
     
     return copy.slice(0, count);
+}
+
+// Play audio from base64 string
+function playAudioResponse(text, btnElement) {
+    if (!text) return;
+
+    // 1. SPAM PREVENTION: If already loading, ignore this click completely.
+    if (isTTSLoading) {
+        console.log("TTS request ignored: Already loading.");
+        return; 
+    }
+
+    // 2. STOP PREVIOUS: If audio is currently speaking, stop it.
+    if (currentTTSAudio) {
+        currentTTSAudio.pause();
+        currentTTSAudio.currentTime = 0;
+        currentTTSAudio = null;
+    }
+
+    // 3. LOCK & VISUALS: Set state to loading
+    isTTSLoading = true;
+    
+    // If a button was passed, add the loading class (makes it spin/fade)
+    if (btnElement) {
+        btnElement.classList.add("tts-loading");
+    }
+    
+    // Handle Music Pausing
+    const bgMusic = document.getElementById('bg-music');
+    let musicWasPlaying = false;
+    if (bgMusic && !bgMusic.paused) {
+        musicWasPlaying = true;
+        bgMusic.pause();
+    }
+
+    // 4. FETCH
+    fetch("/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // 5. UNLOCK: Request finished
+        isTTSLoading = false;
+        if (btnElement) btnElement.classList.remove("tts-loading"); // Stop spinning
+
+        if (data.audio) {
+            const audio = new Audio("data:audio/wav;base64," + data.audio);
+            currentTTSAudio = audio; // Store global reference
+
+            // Resume music when voice ends
+            audio.onended = () => {
+                currentTTSAudio = null;
+                if (musicWasPlaying && bgMusic) bgMusic.play().catch(e => console.log(e));
+            };
+
+            audio.play();
+        } else {
+            console.error("No audio data returned");
+            if (musicWasPlaying && bgMusic) bgMusic.play();
+        }
+    })
+    .catch(err => {
+        // Error cleanup
+        console.error("TTS Error:", err);
+        isTTSLoading = false;
+        if (btnElement) btnElement.classList.remove("tts-loading");
+        if (musicWasPlaying && bgMusic) bgMusic.play();
+    });
 }
 
 /* =========================================
@@ -251,14 +323,31 @@ function setupUI() {
 
 function renderSuggestions(questionsArray) {
     if(!suggestionsContainer) return;
-    suggestionsContainer.innerHTML = ""; // Clear old chips
+    suggestionsContainer.innerHTML = ""; 
 
     questionsArray.forEach(qText => {        
-        const btn = document.createElement("button");
-        btn.className = "suggestion-chip";
-        btn.textContent = qText;
-        btn.onclick = () => askQuestion(qText);
-        suggestionsContainer.appendChild(btn);
+        // Create a wrapper div to hold text + speaker icon
+        const wrapper = document.createElement("div");
+        wrapper.className = "suggestion-wrapper"; 
+
+        // 1. The Question Button (Main Action)
+        const textBtn = document.createElement("button");
+        textBtn.className = "suggestion-chip";
+        textBtn.textContent = qText;
+        textBtn.onclick = () => askQuestion(qText);
+
+        // 2. The Speaker Button (Read Aloud)
+        const speakerBtn = document.createElement("button");
+        speakerBtn.className = "suggestion-speaker-btn";
+        speakerBtn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+        speakerBtn.onclick = (e) => {
+            e.stopPropagation(); // Prevent triggering the "ask" action
+            playAudioResponse(qText, speakerBtn);
+        };
+
+        wrapper.appendChild(textBtn);
+        wrapper.appendChild(speakerBtn);
+        suggestionsContainer.appendChild(wrapper);
     });
 }
 
@@ -271,7 +360,36 @@ function addToChat(sender, text) {
       name = text.startsWith("<em>") ? "System" : (currentFurniture?.title || "Furniture");
   }
 
-  div.innerHTML = `<strong>${name}:</strong> <span>${text}</span>`;
+  // Visual formatting (Bold *actions*)
+  const formattedText = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+
+  if (sender === "bot") {
+      // --- FIX: Group Name and Text into one 'message-content' div ---
+      // This ensures they stack vertically (Name on top, text below)
+      // while the button sits to the right of the whole group.
+      div.innerHTML = `
+        <div class="message-content">
+            <strong>${name}:</strong> 
+            <span>${formattedText}</span>
+        </div>`;
+
+      // Create Speaker Button
+      const audioBtn = document.createElement("button");
+      audioBtn.className = "chat-audio-btn";
+      audioBtn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+      
+      audioBtn.onclick = () => {
+          const cleanText = text.replace(/<[^>]*>/g, ''); 
+          playAudioResponse(cleanText, audioBtn);
+      };
+      
+      div.appendChild(audioBtn);
+
+  } else {
+      // User message (standard layout)
+      div.innerHTML = `<strong>${name}:</strong> <span>${formattedText}</span>`;
+  }
+
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
@@ -283,8 +401,6 @@ async function askQuestion(questionText) {
   // Add User Message to Chat
   addToChat("user", questionText);
   
-  // Mark as used prevent this specific question from appearing again
-  // We use the exact string to match the JSON pool
   if (!usedQuestionsInRound.includes(questionText)) {
       usedQuestionsInRound.push(questionText);
   }
@@ -294,7 +410,6 @@ async function askQuestion(questionText) {
   if(userInput) userInput.disabled = true;
   if(sendBtn) sendBtn.disabled = true;
 
-  // Visually disable chips
   const chips = document.querySelectorAll(".suggestion-chip");
   chips.forEach(c => c.disabled = true);
 
@@ -317,9 +432,6 @@ async function askQuestion(questionText) {
       addToChat("bot", `Error: ${data.error}`);
     } else {
       addToChat("bot", data.answer);
-      
-      // Generate new suggestions
-      // The helper function will now filter out the question has been pushed to 'usedQuestionsInRound'
       renderSuggestions(pickRandomQuestions(globalQuestionPool, 2));
     }
 

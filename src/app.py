@@ -45,6 +45,18 @@ def get_questions():
     return jsonify(questions_data)
 
 
+@app.route("/speak", methods=["POST"])
+def speak_endpoint():
+    data = request.json
+    text_to_speak = data.get("text", "")
+    
+    audio_base64 = speak(text_to_speak)
+    
+    if audio_base64:
+        return jsonify({"audio": audio_base64})
+    else:
+        return jsonify({"error": "TTS generation failed"}), 500
+
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.json
@@ -68,14 +80,10 @@ def ask():
     if "error" in response_data:
         return jsonify({"error": response_data["error"]}), 500
 
-    # TTS Placeholder
-    audio_base64 = "" 
-
-    # Return the structured data to the frontend
+        # Return the structured data to the frontend
     return jsonify({
         "answer": response_data.get("message", "I am speechless..."), # The character text
-        "audio": audio_base64
-    })
+           })
 
 @app.route("/end")
 def end_page():

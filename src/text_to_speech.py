@@ -8,6 +8,9 @@ from num2words import num2words
 # --- CONFIGURATION ---
 REF_AUDIO_PATH = "data/tts_sample/sample.wav"
 REF_TEXT_PATH = "data/tts_sample/sample_text.txt"
+# Current sample is "baseball" file from study: 
+# https://github.com/phoebsc/Naturalistic-Free-Recall-Dataset 
+# Trimmed to around 4 minutes
 # ---------------------
 
 load_dotenv()
@@ -103,7 +106,7 @@ def clean_text_for_tts(text):
 
     return final_action + final_body
 
-def speak(text, clean_input=True, verbose=True):
+def speak(text, clean_input=True, verbose=False):
     """
     Sends text to Fish Speech using a STATIC reference.
     
