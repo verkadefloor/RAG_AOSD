@@ -285,8 +285,11 @@ function stopTimer() {
     if (timerInterval) clearInterval(timerInterval);
 }
 
-function endSession() {
+async function endSession() {
   stopTimer();
+  if (currentFurniture && currentFurnitureLog.length > 0) {
+      await saveCurrentLog();
+  }
   window.location.href = "/end";
 }
 
@@ -577,11 +580,15 @@ function closeConfirmation() {
     pendingAction = null;
 }
 
-function confirmAction() {
+async function confirmAction() {
     if(confirmModal) confirmModal.classList.add('hidden');
     
     if (pendingAction === 'exit') {
         stopTimer();
+        if (currentFurniture && currentFurnitureLog.length > 0) {
+            console.log("Saving before exit...");
+            await saveCurrentLog();
+        }
         window.location.href = "/";
     } 
     else if (pendingAction === 'next') {
