@@ -831,6 +831,20 @@
 .tts-loading {
     cursor: not-allowed !important;
     opacity: 0.7;
-    animation: spin 1s linear infinite; /* Rotates the icon */
-    pointer-events: none; /* Physically prevents clicking */
+    animation: spin 1s linear infinite; 
+    pointer-events: none;
+}
+
+/* Style for the link under the email box */
+.simple-text-link {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    color: #555; 
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.simple-text-link:hover {
+    color: #b5291ca6; 
 }

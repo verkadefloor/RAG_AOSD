@@ -102,10 +102,13 @@
     <div class="modal-content times-up-content">
         <div class="modal-header">
             <h3>Time's Up!</h3>
+            <button id="close-times-up-x" class="close-btn">&times;</button>
         </div>
+        
         <div class="modal-body">
             <p class="highlight-text">Fancy a "second date" in real life?</p>
             <p class="small-text">Leave your email to receive viewing information.</p>
+            
             <div class="email-signup-wrapper">
                 <form id="times-up-form">
                     <input type="email" id="times-up-email" placeholder="Your email address" required class="modal-input">
@@ -115,7 +118,14 @@
                     <span style="color: #7da076; font-weight: bold;">Saved! We'll be in touch.</span>
                 </div>
             </div>
+
+            <div style="margin-top: 15px; margin-bottom: 5px;">
+                <a id="times-up-collection-link" href="#" target="_blank" class="simple-text-link">
+                    View this object on the Collection Page
+                </a>
+            </div>
         </div>
+
         <div class="modal-footer column-layout">
             <button id="modal-next-round-btn" class="nav-btn next-btn full-width">Start Next Speeddate</button>
             <a href="/" id="modal-exit-link" class="text-link">No thanks, exit experience</a>
@@ -131,7 +141,7 @@
         </div>
         <div class="modal-body">
             <p style="line-height: 1.6; color: #555; font-size: 0.95rem;">
-                The objects featured here are authentic historical artifacts. Please view them with historical awareness.
+                The museum furniture looks beautiful, but not all of history is. Make sure you stay informed and don’t let the beauty blind you.
             </p>
         </div>
         <div class="modal-footer" style="text-align: center;">
