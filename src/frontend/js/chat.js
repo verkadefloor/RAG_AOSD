@@ -22,8 +22,7 @@ let isTTSLoading = false;   // Locks the interface while fetching
 let currentTTSAudio = null; // Tracks the currently playing audio object
 let currentFurnitureLog = [];
 let conversationHistory = [];
-let isTTSLoading = false;   
-let currentTTSAudio = null; 
+
 
 // DOM Elements
 const furnitureNameEl = document.getElementById("furniture-name");
