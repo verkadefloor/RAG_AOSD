@@ -1,6 +1,7 @@
 import json
 import re
 import os
+import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -21,6 +22,7 @@ Model_used = "qwen3-24b-a4b-imatrix"
 with open("data/raw/furniture_data.json", "r", encoding="utf-8") as f:
         furniture_data = json.load(f)
 
+current_year = datetime.datetime.now().year
 # -------------------------
 # Validation Helper
 # -------------------------
@@ -68,11 +70,45 @@ def generate_with_retry(messages, response_format=None, max_retries=3, temperatu
     
     return None, "Failed to generate clean text."
 
+def trim_history(history, max_tokens=3000):
+    if not history: return []
+    
+    current_tokens = 0
+    kept_msgs = []
+    # Reverse to keep newest first
+    for msg in history[::-1]:
+        # Rough estimate: 1 token ~= 4 chars
+        msg_len = len(msg.get("content", "")) / 4
+        if current_tokens + msg_len > max_tokens:
+            break
+        kept_msgs.insert(0, msg)
+        current_tokens += msg_len
+    return kept_msgs
+
+def save_conversation_log(furniture_title, log_data):
+    if not log_data: return
+
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
+
+    safe_title = re.sub(r'[^a-zA-Z0-9]', '_', furniture_title)
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"logs/{timestamp}_{safe_title}.txt"
+
+    try:
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(f"CHAT LOG: {furniture_title}\nDATE: {timestamp}\n\n")
+            for entry in log_data:
+                f.write(f"[{entry.get('timestamp')}] {entry.get('speaker')}: {entry.get('text')}\n")
+                f.write("-" * 20 + "\n")
+        print(f"Log saved: {filename}")
+    except Exception as e:
+        print(f"Error saving log: {e}")
 
 # -------------------------
 # Main Chat Logic
 # -------------------------
-def chat_with_furniture(user_input, furniture_title):
+def chat_with_furniture(user_input, furniture_title, history=[]):
     furniture = next((item for item in furniture_data if item["title"] == furniture_title), None)
     if not furniture:
         return {"error": f"Furniture '{furniture_title}' not found."}
@@ -128,9 +164,9 @@ def chat_with_furniture(user_input, furniture_title):
         "### INSTRUCTIONS ###\n"
         "1. DETAILS: Tell the user about yourself using ONLY the FACTS block above. DON'T act like you have known the user for years, you just met.\n"
         "2. FLOW: If the user asks a question, answer it. If the conversation stalls, ask a question back.\n"
-        "3. STYLE: Flirty. It is very IMPORTANT that it is a natural logical conversation\n"
+        "3. STYLE: Flirty. It is very IMPORTANT that it is a natural logical conversation. Avoid asking too many questions. Do not use emojis.\n"
         "4. LENGTH: Keep it under 60 words. Do NOT state the word count.\n" 
-        "5. TRUTH: You only know what is in the provided data. NEVER invent history, dates, or makers.\n"
+        f"5. TRUTH: You only know what is in the provided data. The current year is {current_year}. NEVER invent history, dates, or makers.\n"
         "6. BALANCE RULE: Alternate focus. Sometimes ask about the user (memories, taste, feelings), sometimes talk about yourself using the FACTS block above.\n" 
     )
 
@@ -138,11 +174,17 @@ def chat_with_furniture(user_input, furniture_title):
     f"USER INPUT: {user_input}\n\n"
     )
 
+    messages = [{"role": "system", "content": system_prompt_furniture}]
+
+    if history and history[-1]['role'] == 'user' and history[-1]['content'] == user_input:
+        history = history[:-1]
+
+    messages.extend(trim_history(history))
+
+    messages.append({"role": "user", "content": f"USER INPUT: {user_input}\n\n"})
+    #print(messages)
     furniture_message, err = generate_with_retry(
-        messages=[
-            {"role": "system", "content": system_prompt_furniture},
-            {"role": "user", "content": user_prompt_furniture}
-        ],
+        messages,
         temperature=0.7 
     )
 

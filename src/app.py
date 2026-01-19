@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 import json
 
-from rag_model import chat_with_furniture  
+from rag_model import chat_with_furniture, save_conversation_log 
 from text_to_speech import speak           
 
 app = Flask(
@@ -62,6 +62,7 @@ def ask():
     data = request.json
     furniture_title = data.get("furniture")
     question = data.get("question")
+    history = data.get('history', [])
 
     # Locate furniture data
     furniture = next(
@@ -74,7 +75,7 @@ def ask():
 
     # Call the LLM function
     # Expected format: {'message': "...", 'options': ["...", "...", "..."]}
-    response_data = chat_with_furniture(question, furniture_title)
+    response_data = chat_with_furniture(question, furniture_title, history)
 
     # Check if the LLM function returned an internal error
     if "error" in response_data:
@@ -84,6 +85,16 @@ def ask():
     return jsonify({
         "answer": response_data.get("message", "I am speechless..."), # The character text
            })
+
+@app.route('/save_log', methods=['POST'])
+def save_log():
+    data = request.json
+    logs = data.get('logs', [])
+    title = data.get('furnitureTitle', 'Unknown')
+    
+    # Save to file
+    save_conversation_log(title, logs)
+    return jsonify({"status": "success"})
 
 @app.route("/end")
 def end_page():

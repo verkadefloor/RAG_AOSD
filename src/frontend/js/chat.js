@@ -20,6 +20,8 @@ let globalQuestionPool = [];
 let usedQuestionsInRound = []; 
 let isTTSLoading = false;   // Locks the interface while fetching
 let currentTTSAudio = null; // Tracks the currently playing audio object
+let currentFurnitureLog = [];
+let conversationHistory = [];
 
 // DOM Elements
 const furnitureNameEl = document.getElementById("furniture-name");
@@ -222,7 +224,11 @@ async function initChat() {
   }
 }
 
-function startNextRound() {
+async function startNextRound() {
+  if (currentFurniture) {
+    await saveCurrentLog()
+  }
+
   if(timesUpModal) timesUpModal.classList.add('hidden');
 
   if (roundCounter >= matches.length) { 
@@ -238,6 +244,8 @@ function startNextRound() {
 
   setupUI();
   startTimer(TIME_LIMIT_SECONDS);
+  conversationHistory = []; 
+  currentFurnitureLog = [];
 }
 
 function startTimer(duration) {
@@ -417,6 +425,18 @@ async function askQuestion(questionText) {
   // Add User Message to Chat
   addToChat("user", questionText);
   
+  // --- NEW: Track User Message for History & Logs ---
+  // 1. For the AI Context
+  conversationHistory.push({ role: "user", content: questionText });
+  
+  // 2. For the Text File Log
+  currentFurnitureLog.push({
+      speaker: "User",
+      text: questionText,
+      timestamp: new Date().toLocaleTimeString()
+  });
+  // --------------------------------------------------
+
   // Mark as used prevent this specific question from appearing again
   if (!usedQuestionsInRound.includes(questionText)) {
       usedQuestionsInRound.push(questionText);
@@ -437,7 +457,8 @@ async function askQuestion(questionText) {
       body: JSON.stringify({ 
         furniture: currentFurniture.title, 
         question: questionText,
-        context: currentFurniture.description 
+        context: currentFurniture.description,
+        history: conversationHistory // <--- NEW: Send history to server
       })
     });
     
@@ -446,16 +467,35 @@ async function askQuestion(questionText) {
     const data = await res.json();
 
     if (data.error) {
+      // If server returns a logic error, remove the last user message from history
+      // so the AI doesn't get confused by an unanswered question next time.
+      conversationHistory.pop(); 
       addToChat("bot", `Error: ${data.error}`);
     } else {
       addToChat("bot", data.answer);
       
+      // --- NEW: Track Bot Response for History & Logs ---
+      // 1. For the AI Context
+      conversationHistory.push({ role: "assistant", content: data.answer });
+      
+      // 2. For the Text File Log
+      currentFurnitureLog.push({
+          speaker: currentFurniture.title,
+          text: data.answer,
+          timestamp: new Date().toLocaleTimeString()
+      });
+      // --------------------------------------------------
+
       // Generate new suggestions
       renderSuggestions(pickRandomQuestions(globalQuestionPool, 2));
     }
 
   } catch (err) {
     console.error("Interaction failed:", err);
+    
+    // If connection fails, remove the user message from history
+    conversationHistory.pop(); 
+    
     showConnectionError();
   } finally {
     // Re-enable Inputs
@@ -463,6 +503,26 @@ async function askQuestion(questionText) {
     if(sendBtn) sendBtn.disabled = false;
     if(userInput) userInput.focus();
   }
+}
+
+async function saveCurrentLog() {
+    if (!currentFurniture || currentFurnitureLog.length === 0) return;
+
+    const payload = {
+        furnitureTitle: currentFurniture.title,
+        logs: currentFurnitureLog
+    };
+
+    try {
+        await fetch('/save_log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        console.log(`Saved log for ${currentFurniture.title}`);
+    } catch (e) {
+        console.error("Save log failed:", e);
+    }
 }
 
 function showConnectionError() {
