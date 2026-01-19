@@ -3,7 +3,11 @@ import os
 from text_to_speech import speak
 
 text_to_speak = (
-     "I was handcrafted in the misty Northern Netherlands, around 1700 to 1725. But I don't have a real 'home,' just a museum display. Though I do have a favorite place: when you're sitting close enough to feel my wood. Tell me, what's your favorite memory?"
+     " chair creaks "
+     " I was handcrafted in the misty Northern Netherlands, around seventeen-hundred to seventeen-twenty-five. "
+     " But I don't have a real 'home,' just a museum display. " 
+     " Though I do have a favorite place: when you're sitting close enough to feel my wood. "
+     " Tell me, what's your favorite memory? "
 )
 print("Generating audio... please wait.")
 base64_result = speak(text_to_speak)
