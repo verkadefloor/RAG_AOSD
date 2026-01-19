@@ -1,21 +1,5 @@
 [
   {
-    "title": "Cartel clock",
-    "type": "clock",
-    "period": "18th century",
-    "description": "Cartel clock mounted in a gilded bronze case. On a large S-shaped volute, lower left of the round dial, sits the goddess Diana on the clouds with arms spread toward the slumbering Endymion, lying on a smaller volute lower right, with shepherd's staff in hand and flanked by his dog. Above the dial, Cupid watches from the clouds with bow and arrow in his hands. Upper left of the dial is a wall with shell motif and cornice; finished with flower, leaf and volute motifs.",
-    "dating": "c. 1741",
-    "location": "Rijksmuseum, Amsterdam",
-    "character": "Someone who wants everything to be perfect and demands the highest standards possible. And wants to be like other clocks.",
-    "image": "https://iiif.micr.io/NETCA/full/%5E640,/0/default.webp",
-    "image_after": "images/cartelclock_after.png",
-    "objectNumber": "BK-1959-88",
-    "maker": "Jacques Caffieri, Julien Le Roy, Antoine-Nicolas Martinière",
-    "dimensions": "h 64.5cm × w 33cm × d 11cm",
-    "acquired": "Purchased 1959",
-    "url": "https://www.rijksmuseum.nl/en/collection/object/Cartel-clock--156e2a514705a5a8ba3d1ee3aaaba26a?tab=data"
-  },
-  {
     "title": "Gaming table",
     "type": "toy",
     "period": "18th century",
@@ -47,22 +31,7 @@
     "acquired": "Purchased 1997",
     "url": "https://www.rijksmuseum.nl/en/collection/object/Mantle-clock-pendule--e8fa084aa077621c74089f9f13ee8c05?tab=data"
   },
-  {
-    "title": "Oak Cabinet",
-    "type": "cabinet",
-    "period": "18th century",
-    "description": "Cabinet of oak, veneered with walnut and burl walnut, consisting of an upper and lower case, both with strongly curved surfaces and S-shaped curves in horizontal cross-section. Round corner posts; wavy bottom, middle and top moldings. The carved ornaments consist of rocailles and plant motifs. The cabinet stands on so-called foaming feet. The hinges and keyholes are concealed by flower branches growing over them. All of this makes the entire piece of furniture work as one ornamental form.",
-    "dating": "c. 1755 - c. 1765",
-    "location": "Rijksmuseum, Amsterdam",
-    "character": "Someone organized is able to plan things carefully and keep things, Peaceful, calm and without worry, nervous and uncomfortable with other people, showing intelligence, or able to learn and understand things easily",
-    "image": "https://iiif.micr.io/vXkFL/full/%5E640,/0/default.webp",
-    "image_after": "images/oakcabinet_after.png",
-    "objectNumber": "BK-1989-16",
-    "maker": "Anonymous (Amsterdam)",
-    "dimensions": "h 243.7cm × w 198.5cm × d 70.5cm",
-    "acquired": "Purchased 1989",
-    "url": "https://www.rijksmuseum.nl/en/collection/object/Cabinet--7c0cbb5bee57f4f830fd4e81eaba80d5?tab=data"
-  },
+  
   {
     "title": "Rosewood chair",
     "type": "chair",
@@ -79,54 +48,7 @@
     "acquired": "Purchased 1970",
     "url": "https://www.rijksmuseum.nl/en/collection/object/Chair--26e23e6c54850a98dae5267acac32916?tab=data"
   },
-  {
-    "title": "Chest of painted poplar wood",
-    "type": "chest",
-    "period": "15th century",
-    "description": "Chest of painted poplar wood, resting on the scalloped corner pieces of the lower sill. The front is quarter-round, alternately painted with heraldic figures placed within squares, interrupted left and right by a wreath of leaves with flowers, within which is a coat of arms with ladder and crowned by four fleurs-de-lis. The sides also display heraldic figures and bear iron handles.",
-    "dating": "c. 1450 - c. 1499",
-    "location": "Rijksmuseum, Amsterdam",
-    "character": "wanting to protect someone from criticism, hurt, danger, etc. because you like them very much, willing to try new, unusual, and exciting things, Someone who is secretive and hides their feelings, thoughts, intentions, and actions from others",
-    "image": "https://iiif.micr.io/pmDmO/full/%5E640,/0/default.webp",
-    "image_after": "images/poplarwoodchest_after.png",
-    "objectNumber": "BK-16627",
-    "maker": "Anonymous (Italy, Florence)",
-    "dimensions": "h 56cm × w 156cm × d 49cm",
-    "acquired": "Unknown",
-    "url": "https://www.rijksmuseum.nl/en/collection/object/Chest--7af85d33e203b37c4fabd7a2aef3074c?tab=data"
-  },
-  {
-    "title": "Decorated Painter's Box",
-    "type": "chest",
-    "period": "17th century",
-    "description": "Oak painter's box painted black, marbled on the inside or covered with red cloth and painted on the outside with scenes including two cavalry battles, a grisaille with winter landscape with hunters, a water landscape with duck decoy and ducks, and two village views; on the inside of the lid a shepherd scene. The box contains three drawers with pull rings, of which the top one does not occupy the full width, with 34 painting supplies; under the lid eight compartments of various sizes.",
-    "dating": "1640 - 1660",
-    "location": "Rijksmuseum, Amsterdam",
-    "character": "wanting to protect someone from criticism, hurt, danger, etc. because you like them very much, willing to try new, unusual, and exciting things, Someone who is secretive and hides their feelings, thoughts, intentions, and actions from others",
-    "image": "https://iiif.micr.io/GNOkA/full/%5E640,/0/default.webp",
-    "image_after": "images/painterschest_after.png",
-    "objectNumber": "BK-15234",
-    "maker": "Attributed to Anthonie Jansz. van der Croos, Jan Martszen de Jonge",
-    "dimensions": "h 44cm × w 36cm × d 23.7cm",
-    "acquired": "Gift 1938",
-    "url": "https://www.rijksmuseum.nl/en/collection/object/Decorated-Painters-Box--9b956ec0c1ca6100ec4d845a4ee72258?tab=data"
-  },
-  {
-    "title": "Chair with diagonally placed front legs",
-    "type": "chair",
-    "period": "17th century",
-    "description": "Chair of walnut, upholstered with bronze-colored pressed plush with floral pattern. The chair has diagonally placed front legs in the form of broken S-volutes and rest on lion claws grasping balls. The X-shaped cross has broken S-volutes, as does the front rail. A knob stands at the intersection. The high, openwork back also displays S-volutes. The elongated center piece is decorated with circle and rosette in the middle and above and below with acanthus leaf and rosettes.",
-    "dating": "1685 - 1700",
-    "location": "Rijksmuseum, Amsterdam",
-    "character": "fearing that someone you love loves someone else or is loved by someone else, showing agreement and giving encouragement, liking to take control in a group and having natural authority",
-    "image": "https://iiif.micr.io/zXgyI/full/%5E640,/0/default.webp",
-    "image_after": "images/diagonalchair_after.png",
-    "objectNumber": "BK-NM-4141",
-    "maker": "Anonymous (Northern Netherlands)",
-    "dimensions": "h 130.5cm × w 56cm × d 59.5cm",
-    "acquired": "Purchased 1877",
-    "url": "https://www.rijksmuseum.nl/en/collection/object/Stoel-met-overhoeks-geplaatste-voorpoten-X-vormig-kruis-bekleed-met-trijp-met-bloemenpatroon--9436008eae67cd8fabf461ce4b3674b9?tab=data"
-  },
+  
   {
     "title": "Tortoiseshell Cabinet",
     "type": "cabinet",
@@ -143,38 +65,5 @@
     "acquired": "Purchased 1996",
     "url": "https://www.rijksmuseum.nl/en/collection/object/Cabinet--c23ce6b5e7f2a970d2455f36ccd6648f?tab=data"
 
-  },
-  {
-    "title": "Sideboard",
-    "type": "cabinet",
-    "period": "20th century",
-    "description": "Sideboard of coromandel wood consisting of a lower section with slanted sides, a receding middle section and a top. The lower section is divided into five sections separated by posts with carved half-columns. The three middle parts each contain two doors with a drawer above them. The other two parts form the beveled corners and contain a panel with a drawer above. The doors consist of panels carved with crowned coats of arms and two confronting lions amid foliage. Each coat of arms is different and is inlaid with palmwood. The panels on the beveled corners contain carved flower branches. The drawers are inlaid with ivory and palmwood and contain, like the doors, copper fittings consisting of keyplates and handles in the form of masks and predators. In the receding middle section are four display cases separated by posts with carved half-columns and figures. Below the display cases is a wide openwork rail with inlaid medallions. A forward-curved wall forms the transition from the display cases to the top. The top contains three openwork rails, two above each other and one receding above them. The two rails above each other are divided by nine posts, seven of which are crowned with carved figures. These alternately end at the bottom in lion heads or two intertwined figures. The other two posts, located on either side of the middle post, are crowned with a carved coat of arms and end at the bottom in a bull's head.",
-    "dating": "1902",
-    "location": "Rijksmuseum, Amsterdam",
-    "character": "Someone organized is able to plan things carefully and keep things, Peaceful, calm and without worry, nervous and uncomfortable with other people, showing intelligence, or able to learn and understand things easily",
-    "image": "https://iiif.micr.io/cTnaP/full/%5E640,/0/default.webp",
-    "image_after": "images/sideboard_after.png",
-    "objectNumber": "BK-1977-25",
-    "maker": "Carel Adolph Lion Cachet, Kunsthandel E.J. van Wisselingh",
-    "dimensions": "h 285cm × w 306cm × d 79cm",
-    "acquired": "Purchased 1977",
-    "url": "https://www.rijksmuseum.nl/en/collection/object/Sideboard--cb0ed5326732a5c3167eee46ee9f8557?tab=data"
-  },
-  {
-    "title": "Dolls’ house of Petronella Oortman",
-    "type": "toy",
-    "period": "17th century",
-    "description": "Dollhouse housed in a cabinet decorated with marquetry of tortoiseshell and tin on an oak core. The two front doors each contain six faceted panes of glass. The eight S-shaped diagonally placed volute legs are connected by scalloped X-shaped stretchers, with three drawers above the legs. Almost all parts of the cabinet display thin symmetrical leaf scrolls, and the sides bear the initials B O. The house contains many upholstered, painted and fully furnished living and service rooms. The original dolls are missing.",
-    "dating": "c. 1686 - c. 1710",
-    "location": "Rijksmuseum, Amsterdam",
-    "character": "intended to be funny, happy, or enjoyable, rather than serious, done as a form of play rather than intended seriously, or wanting to have a good time and not feeling serious, pleasant or pleasing",
-    "image": "https://iiif.micr.io/vacBr/0,0,3168,2872/%5E830,/0/default.webp",
-    "image_after": "images/dollhouse_after.jpg",
-    "objectNumber": "BK-NM-1010",
-    "maker": "Anonymous (Amsterdam)",
-    "dimensions": "h 255cm × w 190cm × d 78cm",
-    "acquired": "Unknown",
-    "url": "https://www.rijksmuseum.nl/en/collection/object/Dolls-house-of-Petronella-Oortman--62700ab4ff22218345de76f77d58ad39"
-  }  
-
+  }
 ]

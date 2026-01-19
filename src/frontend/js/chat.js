@@ -11,7 +11,7 @@ let viewedTitles = [];
 let roundCounter = 0;
 let timerInterval = null;
 let revealTimeout = null;
-let maxRounds = 3;
+let maxRounds = 2; // Default 2 dates per group
 let timeLeft = 0;           
 let pendingAction = null;   
 
@@ -155,12 +155,14 @@ function playAudioResponse(text, btnElement) {
 
 async function initChat() {
   try {
-    // Fetch Furniture List
+    console.log("Starting Chat Session...");
+
+    // 1. Fetch Furniture List
     const furnitureRes = await fetch('/get_furniture_list'); 
     if (!furnitureRes.ok) throw new Error("Could not load furniture list");
     const furnitureData = await furnitureRes.json();
 
-    // Fetch Questions from Backend
+    // 2. Fetch Questions from Backend
     try {
         const questionsRes = await fetch('/get_questions');
         if (questionsRes.ok) {
@@ -169,46 +171,54 @@ async function initChat() {
                 globalQuestionPool = loadedQuestions;
                 console.log("Questions loaded:", globalQuestionPool.length);
             } else {
-                throw new Error("Empty list");
+                globalQuestionPool = ["Who are you?", "What is your story?"];
             }
-        } else {
-            throw new Error("Route failed");
         }
     } catch (err) {
-        console.warn("Using fallback questions. Reason:", err);
+        console.warn("Using fallback questions.", err);
         globalQuestionPool = ["Who are you?", "How old are you?", "Where are you from?"];
     }
 
-    // Setup Preferences
-    let selectedPeriod = localStorage.getItem("selectedPeriod");
-    let roundsPref = localStorage.getItem("numberOfRounds");
+    // ---------------------------------------------------------
+    // 3. MATCHMAKING LOGIC (UPDATED FOR GROUPS)
+    // ---------------------------------------------------------
     
-    selectedPeriod = selectedPeriod ? selectedPeriod.toLowerCase().trim() : 'all';
-    maxRounds = roundsPref ? parseInt(roundsPref) : 3; 
+    // Check localStorage for specific IDs (from index.html)
+    const storedIdsString = localStorage.getItem('selectedFurnitureIds');
+    matches = [];
 
-    // Matchmaking Logic
-    let strictMatches = furnitureData.filter(item => {
-      const itemPeriod = (item.period || "").toLowerCase().trim();
-      return (selectedPeriod === 'all' || itemPeriod === selectedPeriod);
-    });
-
-    if (strictMatches.length >= maxRounds) {
-      matches = strictMatches.sort(() => 0.5 - Math.random()).slice(0, maxRounds);
-    } 
-    else {
-      const primaryCandidates = strictMatches.sort(() => 0.5 - Math.random());
-      const needed = maxRounds - primaryCandidates.length;
-      const primaryTitles = primaryCandidates.map(i => i.title);
-      const potentialFillers = furnitureData.filter(item => !primaryTitles.includes(item.title));
-      const fillers = potentialFillers.sort(() => 0.5 - Math.random()).slice(0, needed);
-      matches = [...primaryCandidates, ...fillers];
+    if (storedIdsString) {
+        try {
+            // Parse the IDs ["BK-...", "BK-..."]
+            const targetIds = JSON.parse(storedIdsString);
+            
+            // Filter furniture matching these numbers
+            matches = furnitureData.filter(item => targetIds.includes(item.objectNumber));
+            
+            // NEW: Shuffle the order of the found matches
+            matches.sort(() => 0.5 - Math.random()); // <--- THIS ENSURES RANDOM ORDER
+            
+            console.log(`Group loaded (random order):`, matches.map(m => m.title));
+        } catch (e) {
+            console.error("Error reading localStorage", e);
+        }
     }
 
+    // FALLBACK: If no group selected (or IDs invalid), pick 2 random items
+    if (matches.length === 0) {
+        console.warn("No specific group found. Random dates will be chosen.");
+        matches = furnitureData.sort(() => 0.5 - Math.random()).slice(0, 2);
+    }
+
+    // Update max rounds based on what we found
+    maxRounds = matches.length;
+
+    // Start the first round
     startNextRound();
 
   } catch (error) {
     console.error("Critical Error:", error);
-    chatBox.innerHTML = "<p style='color:red; text-align:center; padding:20px;'>Server connection failed. Please restart.</p>";
+    if(chatBox) chatBox.innerHTML = "<p style='color:red; text-align:center; padding:20px;'>Server connection failed. Please restart.</p>";
   }
 }
 
@@ -288,11 +298,16 @@ function setupUI() {
 
   imgNormalEl.src = currentFurniture.image;
   imgRevealedEl.src = currentFurniture.image_after;
-  imgNormalEl.onerror = () => { imgNormalEl.src = "images/fallback.png"; };
+  
+  // Fallback if image fails
+  imgNormalEl.onerror = () => { 
+      console.warn("Image not found:", currentFurniture.image);
+      // imgNormalEl.src = "images/fallback.png"; // Uncomment if you have a fallback
+  };
 
   // --- Reset Chat ---
   chatBox.innerHTML = ""; 
-  addToChat("bot", `Hello! I am candidate ${roundCounter}. Let's get to know each other!`);
+  addToChat("bot", `Hello! I am the ${currentFurniture.title}. Let's get to know each other!`);
   
   // --- Reset Input & Suggestions ---
   if(userInput) {
@@ -312,7 +327,8 @@ function setupUI() {
 
   if (nextBtn) {
     nextBtn.disabled = false;
-    nextBtn.textContent = "Next Speeddate";
+    // Update text: "Next Date" or "Finish" if it's the last one
+    nextBtn.textContent = (roundCounter < matches.length) ? "Next Speeddate" : "Finish Dates";
     nextBtn.style.cursor = "pointer";
   }
 }
@@ -401,6 +417,7 @@ async function askQuestion(questionText) {
   // Add User Message to Chat
   addToChat("user", questionText);
   
+  // Mark as used prevent this specific question from appearing again
   if (!usedQuestionsInRound.includes(questionText)) {
       usedQuestionsInRound.push(questionText);
   }
@@ -432,6 +449,8 @@ async function askQuestion(questionText) {
       addToChat("bot", `Error: ${data.error}`);
     } else {
       addToChat("bot", data.answer);
+      
+      // Generate new suggestions
       renderSuggestions(pickRandomQuestions(globalQuestionPool, 2));
     }
 
@@ -451,13 +470,14 @@ function showConnectionError() {
   div.className = "chat-message bot connection-error";
   
   const title = currentFurniture?.title || "The Spirit World";
-  const imgSrc = currentFurniture?.image || "images/fallback.png";
+  // Try to get image, otherwise empty
+  const imgSrc = currentFurniture?.image || ""; 
 
   div.innerHTML = `
     <strong>${title}:</strong>
     <div class="error-content">
-        <img src="${imgSrc}" alt="${title}" class="error-mini-img">
-        <span class="error-text">Sorry... I don't feel the connection anymore.</span>
+        ${imgSrc ? `<img src="${imgSrc}" alt="${title}" class="error-mini-img">` : ''}
+        <span class="error-text">... (silence) ...</span>
     </div>
   `;
 
@@ -484,16 +504,16 @@ function requestConfirmation(action) {
         confirmYesBtn.style.backgroundColor = "#7da076"; 
     }
 
-    confirmModal.classList.remove('hidden');
+    if(confirmModal) confirmModal.classList.remove('hidden');
 }
 
 function closeConfirmation() {
-    confirmModal.classList.add('hidden');
+    if(confirmModal) confirmModal.classList.add('hidden');
     pendingAction = null;
 }
 
 function confirmAction() {
-    confirmModal.classList.add('hidden');
+    if(confirmModal) confirmModal.classList.add('hidden');
     
     if (pendingAction === 'exit') {
         stopTimer();
@@ -502,9 +522,9 @@ function confirmAction() {
     else if (pendingAction === 'next') {
         if (nextBtn) {
             nextBtn.disabled = true;
-            nextBtn.textContent = "Looking for matches...";
+            nextBtn.textContent = "Moving on...";
             nextBtn.style.cursor = "wait";
-            addToChat("user", "<em>I don't think this is a match. Next please!</em>");
+            addToChat("user", "<em>I think we're done here. Next!</em>");
             
             stopTimer(); 
             if (revealTimeout) clearTimeout(revealTimeout);
@@ -558,52 +578,6 @@ if (modalNextBtn) {
         timesUpModal.classList.add('hidden');
         startNextRound();
     };
-}
-
-/* =========================================
-   SETTINGS MODAL LOGIC
-   ========================================= */
-
-const settingsBtn = document.getElementById('settings-btn');
-const settingsModal = document.getElementById('settings-modal');
-const closeSettingsBtn = document.getElementById('close-settings');
-const saveSettingsBtn = document.getElementById('save-settings');
-const modalPeriod = document.getElementById('modal-period');
-const modalRounds = document.getElementById('modal-rounds');
-
-function toggleSettings() {
-    if (!settingsModal) return;
-    const isHidden = settingsModal.classList.contains('hidden');
-    
-    if (isHidden) {
-        if (timerInterval) clearInterval(timerInterval); 
-        
-        const currentPeriod = localStorage.getItem('selectedPeriod') || 'all';
-        const currentRounds = localStorage.getItem('numberOfRounds') || '3';
-        if(modalPeriod) modalPeriod.value = currentPeriod;
-        if(modalRounds) modalRounds.value = currentRounds;
-        settingsModal.classList.remove('hidden');
-    } else {
-        settingsModal.classList.add('hidden');
-        startTimer(); 
-    }
-}
-
-function saveAndRestart() {
-    if(modalPeriod) localStorage.setItem('selectedPeriod', modalPeriod.value);
-    if(modalRounds) localStorage.setItem('numberOfRounds', modalRounds.value);
-    toggleSettings();
-    window.location.reload(); 
-}
-
-if (settingsBtn) settingsBtn.addEventListener('click', toggleSettings);
-if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', toggleSettings);
-if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveAndRestart);
-
-if (settingsModal) {
-    settingsModal.addEventListener('click', (e) => {
-        if (e.target === settingsModal) toggleSettings();
-    });
 }
 
 /* =========================================
