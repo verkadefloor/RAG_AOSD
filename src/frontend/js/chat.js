@@ -18,8 +18,8 @@ let pendingAction = null;
 // GLOBAL DATA
 let globalQuestionPool = []; 
 let usedQuestionsInRound = []; 
-let isTTSLoading = false;   // Locks the interface while fetching
-let currentTTSAudio = null; // Tracks the currently playing audio object
+let isTTSLoading = false;   
+let currentTTSAudio = null; 
 
 // DOM Elements
 const furnitureNameEl = document.getElementById("furniture-name");
@@ -83,23 +83,21 @@ function pickRandomQuestions(arr, count = 2) {
 function playAudioResponse(text, btnElement) {
     if (!text) return;
 
-    // 1. SPAM PREVENTION: If already loading, ignore this click completely.
     if (isTTSLoading) {
         console.log("TTS request ignored: Already loading.");
         return; 
     }
 
-    // 2. STOP PREVIOUS: If audio is currently speaking, stop it.
     if (currentTTSAudio) {
         currentTTSAudio.pause();
         currentTTSAudio.currentTime = 0;
         currentTTSAudio = null;
     }
 
-    // 3. LOCK & VISUALS: Set state to loading
+
     isTTSLoading = true;
     
-    // If a button was passed, add the loading class (makes it spin/fade)
+
     if (btnElement) {
         btnElement.classList.add("tts-loading");
     }
@@ -112,7 +110,7 @@ function playAudioResponse(text, btnElement) {
         bgMusic.pause();
     }
 
-    // 4. FETCH
+
     fetch("/speak", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -120,7 +118,6 @@ function playAudioResponse(text, btnElement) {
     })
     .then(res => res.json())
     .then(data => {
-        // 5. UNLOCK: Request finished
         isTTSLoading = false;
         if (btnElement) btnElement.classList.remove("tts-loading"); // Stop spinning
 
@@ -262,7 +259,14 @@ function startTimer(duration) {
     if (timeLeft < 0) {
       clearInterval(timerInterval);
       if (confirmModal) confirmModal.classList.add('hidden');
+      
       addToChat("bot", "<em>Time is up! The session has ended.</em>");
+      
+      if(userInput) userInput.disabled = true;
+      if(sendBtn) sendBtn.disabled = true;
+      const chips = document.querySelectorAll(".suggestion-chip");
+      chips.forEach(c => c.disabled = true);
+
       showTimesUpModal();
     }
   }, 1000);
@@ -555,6 +559,10 @@ if (backBtn) backBtn.onclick = () => requestConfirmation('exit');
 
 function showTimesUpModal() {
     if (!timesUpModal) return;
+    const popupLink = document.getElementById('times-up-collection-link');
+    if (popupLink && currentFurniture) {
+        popupLink.href = currentFurniture.url || "#";
+    }
 
     if(timesUpForm) timesUpForm.style.display = 'flex';
     if(timesUpSuccess) timesUpSuccess.classList.add('hidden');
@@ -671,5 +679,28 @@ if (musicBtn && bgMusic) {
     });
 }
 
+/* =========================================
+   TIME'S UP POPUP CLOSING LOGIC
+   ========================================= */
+
+const closeTimesUpX = document.getElementById('close-times-up-x');
+
+function closeTimesUp() {
+    if (timesUpModal) timesUpModal.classList.add('hidden');
+}
+
+// Close when clicking the X
+if (closeTimesUpX) {
+    closeTimesUpX.addEventListener('click', closeTimesUp);
+}
+
+// 2. Close when clicking the background overlay
+if (timesUpModal) {
+    timesUpModal.addEventListener('click', (e) => {
+        if (e.target === timesUpModal) {
+            closeTimesUp();
+        }
+    });
+}
 // Start Application
 initChat();
