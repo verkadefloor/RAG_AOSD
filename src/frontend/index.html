@@ -11,6 +11,52 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Extra styling specifiek voor de twee groeps-opties */
+    .group-selection-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .group-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-align: left;
+    }
+
+    .group-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-color: #6b5b4e;
+    }
+
+    .group-card h3 {
+        margin: 0 0 0.5rem 0;
+        color: #6b5b4e;
+        font-size: 1.2rem;
+    }
+
+    .group-card p {
+        margin: 0;
+        color: #555;
+        font-size: 0.9rem;
+    }
+
+    .group-card .names {
+        margin-top: 0.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #333;
+    }
+  </style>
 </head>
 
 <body class="homepage">
@@ -19,107 +65,52 @@
   
   <div class="container">
     <h1>THE ART OF SPEEDDATING</h1>
-    <h2>A historical romance</h2>
+    <h2>Choose your dating pool</h2>
   </div>
 
-  <div class="filter-panel">
-    <div class="filter-row">
-      <label for="period">Choose your preferred time period</label>
-      <select id="period" name="period">
-        <option value="all">Select period</option>
-        <option value="15th century">15th century</option>
-        <option value="17th century">17th century</option>
-        <option value="18th century">18th century</option>
-        <option value="19th century">19th century</option>
-        <option value="20th century">20th century</option>
-        <option value="all">All</option>
-      </select>
+  <div class="group-selection-panel">
+    
+    <div class="group-card" id="btnGroup1">
+        <h3>Group 1</h3>
+        <p class="names">Gaming Table & Mantle Clock</p>
     </div>
 
-    <div class="filter-row">
-      <label for="rounds">How many dates are you up for?</label>
-      <select id="rounds" name="rounds">
-        <option value="1">1 Date</option>
-        <option value="2">2 Dates</option>
-        <option value="3" selected>3 Dates</option>
-        <option value="4">4 Dates</option>
-        <option value="5">5 Dates</option>
-      </select>
+    <div class="group-card" id="btnGroup2">
+        <h3>Group 2</h3>
+        <p class="names">Rosewood Chair & Tortoiseshell Cabinet</p>
     </div>
 
-    <p id="match-feedback" style="margin-bottom: 2rem; color: #ddd; font-style: italic; min-height: 1.2em;">
-      </p>
-
-    <a href="#" class="start-button" id="startBtn">Start speeddating</a>
   </div>
 
   <script>
-    // Global Data
-    let allFurniture = [];
+    // Define the specific Object Numbers for each group based on your JSON
+    const group1_Ids = ["BK-KOG-717", "BK-1997-16"]; // Table & Clock
+    const group2_Ids = ["BK-1970-7", "BK-1996-22"];  // Chair & Cabinet
 
-    // 1. Fetch data
-    fetch('/get_furniture_list')
-      .then(response => response.json())
-      .then(data => {
-        allFurniture = data;
-        updateFeedback();
-      })
-      .catch(err => console.error("Error loading data:", err));
+    function startChatSession(selectedIds) {
+        // Save the specific IDs to local storage so the chat page knows who to load
+        // We use JSON.stringify to store the array as a string
+        localStorage.setItem('selectedFurnitureIds', JSON.stringify(selectedIds));
+        
+        // Also clear old filters just in case
+        localStorage.removeItem('selectedPeriod');
+        localStorage.removeItem('numberOfRounds');
 
-    const periodSelect = document.getElementById('period');
-    const roundsSelect = document.getElementById('rounds');
-    const feedbackEl = document.getElementById('match-feedback');
-    const startBtn = document.getElementById('startBtn');
-
-    // 2. Update feedback text
-    function updateFeedback() {
-      if (allFurniture.length === 0) return;
-
-      const selectedPeriod = periodSelect.value;
-      const desiredRounds = parseInt(roundsSelect.value);
-
-      const strictMatches = allFurniture.filter(item => {
-        if (selectedPeriod === 'all') return true;
-        return (item.period || "").toLowerCase().trim() === selectedPeriod;
-      });
-
-      const count = strictMatches.length;
-
-      if (selectedPeriod === 'all') {
-        feedbackEl.textContent = `You will meet ${desiredRounds} random candidates from our collection.`;
-        feedbackEl.style.color = "#6b5b4e";
-      } 
-      else if (count >= desiredRounds) {
-        feedbackEl.textContent = `Excellent! We found ${count} candidates from the ${selectedPeriod}. You will meet ${desiredRounds} of them.`;
-        feedbackEl.style.color = "#4CAF50"; 
-      } 
-      else if (count > 0) {
-        const needed = desiredRounds - count;
-        feedbackEl.innerHTML = `We found <strong>${count}</strong> matches from the ${selectedPeriod}.<br>To reach ${desiredRounds} dates, we will add <strong>${needed}</strong> mystery guests!`;
-        feedbackEl.style.color = "#FFC107"; 
-      } 
-      else {
-        feedbackEl.textContent = `Alas! No candidates found from the ${selectedPeriod}. We will find you ${desiredRounds} random dates instead.`;
-        feedbackEl.style.color = "#FF5722"; 
-      }
+        // Redirect immediately
+        window.location.href = "/chat"; 
     }
 
-    // 3. Event Listeners
-    periodSelect.addEventListener('change', updateFeedback);
-    roundsSelect.addEventListener('change', updateFeedback);
+    // Event Listeners
+    document.getElementById('btnGroup1').addEventListener('click', function() {
+        startChatSession(group1_Ids);
+    });
 
-    // 4. Start Session
-    startBtn.addEventListener('click', function(e) {
-      e.preventDefault(); 
-      
-      localStorage.setItem('selectedPeriod', periodSelect.value);
-      localStorage.setItem('numberOfRounds', roundsSelect.value); 
-
-      window.location.href = "/chat"; 
+    document.getElementById('btnGroup2').addEventListener('click', function() {
+        startChatSession(group2_Ids);
     });
   </script>
 
-</body>
+</div>
 
 <div class="privacy-banner" id="privacyBanner" style="display: none;">
   <div class="privacy-banner__inner">
@@ -151,4 +142,6 @@
     sessionStorage.setItem('privacyBannerShown', 'true'); 
   });
 </script>
+
+</body>
 </html>
