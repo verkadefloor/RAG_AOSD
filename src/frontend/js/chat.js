@@ -268,6 +268,7 @@ function startTimer(duration) {
     if (timeLeft < 0) {
       clearInterval(timerInterval);
       if (confirmModal) confirmModal.classList.add('hidden');
+      if (currentFurniture && currentFurnitureLog.length > 0) saveCurrentLog();
       
       addToChat("bot", "<em>Time is up! The session has ended.</em>");
       
