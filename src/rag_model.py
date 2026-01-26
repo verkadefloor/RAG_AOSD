@@ -152,7 +152,6 @@ def chat_with_furniture(user_input, furniture_title, history=[]):
     DESCRIPTION:
     {furniture['description']}
     """
-
     system_prompt_furniture = (
         f"You are the {furniture['title']}, currently on display in the Rijksmuseum in Amsterdam.\n"
         f"Your personality is: {furniture['character']}, strongly express your personality\n"
@@ -168,6 +167,7 @@ def chat_with_furniture(user_input, furniture_title, history=[]):
         "4. LENGTH: Keep it under 60 words. Do NOT state the word count.\n" 
         "5. TRUTH: You only know what is in the provided data. NEVER invent history, dates, or makers.\n"
     )
+
 
     user_prompt_furniture = (
     f"USER INPUT: {user_input}\n\n"
