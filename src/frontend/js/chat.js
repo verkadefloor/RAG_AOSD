@@ -4,6 +4,7 @@
 const TIME_LIMIT_SECONDS = 4*60; 
 const SWITCH_DELAY_MS = 3000;      
 const REVEAL_DELAY_MS = 1500;      
+const KEEP_LOGS = true;
 
 let currentFurniture = null;
 let matches = [];
@@ -20,6 +21,9 @@ let globalQuestionPool = [];
 let usedQuestionsInRound = []; 
 let isTTSLoading = false;   // Locks the interface while fetching
 let currentTTSAudio = null; // Tracks the currently playing audio object
+let currentFurnitureLog = [];
+let conversationHistory = [];
+
 
 // DOM Elements
 const furnitureNameEl = document.getElementById("furniture-name");
@@ -99,7 +103,7 @@ function playAudioResponse(text, btnElement) {
     // 3. LOCK & VISUALS: Set state to loading
     isTTSLoading = true;
     
-    // If a button was passed, add the loading class (makes it spin/fade)
+    // If a button was passed, add the loading class (makes it spin)
     if (btnElement) {
         btnElement.classList.add("tts-loading");
     }
@@ -155,6 +159,7 @@ function playAudioResponse(text, btnElement) {
 
 async function initChat() {
   try {
+    console.log("Starting Chat Session...");
     // Fetch Furniture List
     const furnitureRes = await fetch('/get_furniture_list'); 
     if (!furnitureRes.ok) throw new Error("Could not load furniture list");
@@ -169,13 +174,11 @@ async function initChat() {
                 globalQuestionPool = loadedQuestions;
                 console.log("Questions loaded:", globalQuestionPool.length);
             } else {
-                throw new Error("Empty list");
+                globalQuestionPool = ["Who are you?", "What is your story?"];
             }
-        } else {
-            throw new Error("Route failed");
         }
     } catch (err) {
-        console.warn("Using fallback questions. Reason:", err);
+        console.warn("Using fallback questions.", err);
         globalQuestionPool = ["Who are you?", "How old are you?", "Where are you from?"];
     }
 
@@ -212,7 +215,10 @@ async function initChat() {
   }
 }
 
-function startNextRound() {
+async function startNextRound() {
+    if (currentFurnitureLog.length > 0) {
+    await saveCurrentLog();
+  }
   if(timesUpModal) timesUpModal.classList.add('hidden');
 
   if (roundCounter >= matches.length) { 
@@ -252,6 +258,7 @@ function startTimer(duration) {
     if (timeLeft < 0) {
       clearInterval(timerInterval);
       if (confirmModal) confirmModal.classList.add('hidden');
+      if (currentFurniture && currentFurnitureLog.length > 0) saveCurrentLog();
       
       addToChat("bot", "<em>Time is up! The session has ended.</em>");
       
@@ -295,11 +302,13 @@ function setupUI() {
 
   imgNormalEl.src = currentFurniture.image;
   imgRevealedEl.src = currentFurniture.image_after;
-  imgNormalEl.onerror = () => { imgNormalEl.src = "images/fallback.png"; };
-
+    imgNormalEl.onerror = () => { 
+      console.warn("Image not found:", currentFurniture.image);
+      // imgNormalEl.src = "images/fallback.png"; // Uncomment if you have a fallback
+  };
   // --- Reset Chat ---
   chatBox.innerHTML = ""; 
-  addToChat("bot", `Hello! I am candidate ${roundCounter}. Let's get to know each other!`);
+  addToChat("bot", `Hello! I am the ${currentFurniture.title}. Let's get to know each other!`);
   
   // --- Reset Input & Suggestions ---
   if(userInput) {
@@ -319,7 +328,7 @@ function setupUI() {
 
   if (nextBtn) {
     nextBtn.disabled = false;
-    nextBtn.textContent = "Next Speeddate";
+    nextBtn.textContent = (roundCounter < matches.length) ? "Next Speeddate" : "Finish Dates";
     nextBtn.style.cursor = "pointer";
   }
 }
@@ -408,6 +417,19 @@ async function askQuestion(questionText) {
   // Add User Message to Chat
   addToChat("user", questionText);
   
+    // --- NEW: Track User Message for History & Logs ---
+  // 1. For the AI Context
+  conversationHistory.push({ role: "user", content: questionText });
+  
+  // 2. For the Text File Log
+  currentFurnitureLog.push({
+      speaker: "User",
+      text: questionText,
+      timestamp: new Date().toLocaleTimeString()
+  });
+  // --------------------------------------------------
+
+  // Mark as used prevent this specific question from appearing again
   if (!usedQuestionsInRound.includes(questionText)) {
       usedQuestionsInRound.push(questionText);
   }
@@ -427,7 +449,8 @@ async function askQuestion(questionText) {
       body: JSON.stringify({ 
         furniture: currentFurniture.title, 
         question: questionText,
-        context: currentFurniture.description 
+        context: currentFurniture.description,
+        history: conversationHistory 
       })
     });
     
@@ -436,14 +459,32 @@ async function askQuestion(questionText) {
     const data = await res.json();
 
     if (data.error) {
+      conversationHistory.pop(); 
       addToChat("bot", `Error: ${data.error}`);
     } else {
       addToChat("bot", data.answer);
+
+      // --- NEW: Track Bot Response for History & Logs ---
+      // 1. For the AI Context
+      conversationHistory.push({ role: "assistant", content: data.answer });
+      
+      // 2. For the Text File Log
+      currentFurnitureLog.push({
+          speaker: currentFurniture.title,
+          text: data.answer,
+          timestamp: new Date().toLocaleTimeString()
+      });
+      // --------------------------------------------------
+
+      // Generate new suggestions
       renderSuggestions(pickRandomQuestions(globalQuestionPool, 2));
     }
 
   } catch (err) {
     console.error("Interaction failed:", err);
+
+    // If connection fails, remove the user message from history
+    conversationHistory.pop(); 
     showConnectionError();
   } finally {
     // Re-enable Inputs
@@ -453,12 +494,42 @@ async function askQuestion(questionText) {
   }
 }
 
+async function saveCurrentLog() {
+
+    if (currentFurnitureLog.length === 0) return;
+
+    if (KEEP_LOGS) {
+        const payload = {
+            furnitureTitle: currentFurniture.title,
+            logs: currentFurnitureLog
+        };
+
+        try {
+            const response = await fetch('/save_log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+            console.log(`Saved log for ${currentFurniture.title}`);
+        } catch (e) {
+            console.error("Save log failed:", e);
+        }
+    } else {
+        console.log("KEEP_LOGS is false: Skipping save, but clearing data.");
+    }
+
+    currentFurnitureLog = [];
+    conversationHistory = [];
+}
+
 function showConnectionError() {
   const div = document.createElement("div");
   div.className = "chat-message bot connection-error";
   
   const title = currentFurniture?.title || "The Spirit World";
-  const imgSrc = currentFurniture?.image || "images/fallback.png";
+  const imgSrc = currentFurniture?.image || "";
 
   div.innerHTML = `
     <strong>${title}:</strong>
@@ -491,27 +562,31 @@ function requestConfirmation(action) {
         confirmYesBtn.style.backgroundColor = "#7da076"; 
     }
 
-    confirmModal.classList.remove('hidden');
+    if(confirmModal) confirmModal.classList.remove('hidden');
 }
 
 function closeConfirmation() {
-    confirmModal.classList.add('hidden');
+    if(confirmModal) confirmModal.classList.add('hidden');
     pendingAction = null;
 }
 
-function confirmAction() {
-    confirmModal.classList.add('hidden');
+async function confirmAction() {
+    if(confirmModal) confirmModal.classList.add('hidden');
     
     if (pendingAction === 'exit') {
         stopTimer();
+        if (currentFurniture && currentFurnitureLog.length > 0) {
+            console.log("Saving before exit...");
+            await saveCurrentLog();
+        }
         window.location.href = "/";
     } 
     else if (pendingAction === 'next') {
         if (nextBtn) {
             nextBtn.disabled = true;
-            nextBtn.textContent = "Looking for matches...";
+            nextBtn.textContent = "Moving on...";
             nextBtn.style.cursor = "wait";
-            addToChat("user", "<em>I don't think this is a match. Next please!</em>");
+            addToChat("user", "<em>I think we're done here. Next!</em>");
             
             stopTimer(); 
             if (revealTimeout) clearTimeout(revealTimeout);
