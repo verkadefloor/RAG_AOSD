@@ -29,7 +29,7 @@ This repository contains a Retrieval-Augmented Generation (RAG) chatbot that use
 
 ## Backend Services Setup
 
-To fully function, this chatbot requires two backend services running: one for the LLM (`llama.cpp`) and one for TTS (Fish Speech). For the development of the app, these services were ran in two Ubuntu-based containers on a proxmox host, with CUDA acceleration. A CUDA capable device with >=16GB of ram is recommended. For further details on the models used and their installation instructions, please refer to the linked documents.
+To function, this chatbot requires two backend services running: one for the LLM (`llama.cpp`) and one for TTS (Fish Speech). For the development of the app, these services were ran in two Ubuntu-based containers on a proxmox host, with CUDA acceleration. A CUDA device with >=16GB of ram is recommended. For further details on the models used and their installation instructions, please refer to the linked documents.
 
 ### 1. LLM Service (llama.cpp)
 
