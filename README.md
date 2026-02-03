@@ -114,7 +114,7 @@ Once the backend services are running:
 
 * **Inference Engine:** [llama.cpp](https://github.com/ggml-org/llama.cpp)
 
-* **Fish Speech Model:** [fishaudio/fish-speech-1.5](https://huggingface.co/fishaudio/fish-speech-1.5)
+* **Fish Speech Model:** [fishaudio/fish-speech-1.5 (HuggingFace)](https://huggingface.co/fishaudio/fish-speech-1.5)
 
 * **Fish Speech Github:** [fishaudio/fish-speech](https://github.com/fishaudio/fish-speech)
 
